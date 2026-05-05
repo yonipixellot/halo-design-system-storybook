@@ -140,6 +140,35 @@ button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
 .glass-app[data-on-watch="true"] .lg-teaser-stat { animation: none; }
 
 /* ============================================================================
+   IdentityCircle — avatar loading shimmer
+   ============================================================================ */
+
+/* Gemini-image-process-style colored skeleton — cyan/purple/pink radials
+   drift across the surface on a 1.6s loop. Shown while the avatar/logo
+   image is fetching. Once `<img>` fires onLoad, the skeleton fades out
+   and the photo fades in. */
+@keyframes lg-avatar-loading {
+  0% {
+    background-position: 0% 50%, 100% 50%, 50% 100%;
+  }
+  50% {
+    background-position: 100% 50%, 0% 50%, 50% 0%;
+  }
+  100% {
+    background-position: 0% 50%, 100% 50%, 50% 100%;
+  }
+}
+.lg-avatar-skeleton {
+  background:
+    radial-gradient(ellipse 80% 60% at 30% 30%, rgba(0,214,254,0.65) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 70% 70%, rgba(132,88,255,0.55) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255,92,158,0.40) 0%, transparent 65%),
+    linear-gradient(135deg, rgba(20,22,30,0.85), rgba(8,10,16,0.92));
+  background-size: 200% 200%, 200% 200%, 200% 200%, 100% 100%;
+  animation: lg-avatar-loading 1.6s ease-in-out infinite;
+}
+
+/* ============================================================================
    GameCardLive — broadcast/tally treatment (verbatim from prototype 778-963)
    ============================================================================ */
 

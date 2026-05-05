@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { HighlightCircles } from '@/screens/home/HighlightCircles';
 import { IdentityCircle } from '@/screens/home/IdentityCircle';
 import { defaultPlayerState } from '@/screens/home/_data';
+import { TEAM_LOGOS, SAMPLE_PORTRAITS } from '@/screens/home/_avatars';
 
 /* The Following row at the top of Home. Composes IdentityCircle in
    locked sort order:  YOU → followed teams (LIVE first) → followed players
@@ -102,18 +103,27 @@ export const WithLiveTeam: Story = {
   name: 'With live team · ember + LIVE pill',
   render: () => (
     <ShowcaseRow>
-      <IdentityCircle kind="self" avatar={{ initial: 'T' }} label="You" />
+      <IdentityCircle
+        kind="self"
+        avatar={{ src: SAMPLE_PORTRAITS.tal, initial: 'T' }}
+        label="You"
+      />
       <IdentityCircle
         kind="team"
-        avatar={{ initial: 'EP' }}
+        avatar={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
         label="Varsity"
         liveGame={{ gameId: 'g1' }}
       />
-      <IdentityCircle kind="team" avatar={{ initial: 'WC' }} label="Hawks" isNew />
+      <IdentityCircle
+        kind="team"
+        avatar={{ src: TEAM_LOGOS.WC, initial: 'WC' }}
+        label="Hawks"
+        isNew
+      />
       <IdentityCircle
         kind="player"
-        avatar={{ initial: 'S' }}
-        team={{ initial: 'EP' }}
+        avatar={{ src: SAMPLE_PORTRAITS.sarah, initial: 'S' }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
         label="Sarah"
         isClaimed
       />
@@ -122,23 +132,33 @@ export const WithLiveTeam: Story = {
 };
 
 /* Full sort-order showcase — every variant in their proper sequence.
-   Mirrors the "Row in context" demo from identity-circle-spec.html. */
+   Mirrors the "Row in context" demo from identity-circle-spec.html.
+   Now with real logos + profile pics for the lit branches and bare
+   initials/silhouettes for the fallback branches. */
 export const SortOrderShowcase: Story = {
   name: 'Sort order · every variant',
   render: () => (
     <ShowcaseRow>
-      <IdentityCircle kind="self" avatar={{ initial: 'T' }} label="You" />
+      <IdentityCircle
+        kind="self"
+        avatar={{ src: SAMPLE_PORTRAITS.tal, initial: 'T' }}
+        label="You"
+      />
       <IdentityCircle
         kind="team"
-        avatar={{ initial: 'EP' }}
+        avatar={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
         label="Varsity"
         liveGame={{ gameId: 'g1' }}
       />
-      <IdentityCircle kind="team" avatar={{ initial: 'WC' }} label="Hawks" />
+      <IdentityCircle
+        kind="team"
+        avatar={{ src: TEAM_LOGOS.WC, initial: 'WC' }}
+        label="Hawks"
+      />
       <IdentityCircle
         kind="player"
-        avatar={{ initial: 'S' }}
-        team={{ initial: 'EP' }}
+        avatar={{ src: SAMPLE_PORTRAITS.sarah, initial: 'S' }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
         label="Sarah"
         isClaimed
         isNew
@@ -146,24 +166,66 @@ export const SortOrderShowcase: Story = {
       <IdentityCircle
         kind="player"
         avatar={{ initial: 'D' }}
-        team={{ initial: 'EP' }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
         label="Dylan"
         isClaimed
       />
       <IdentityCircle
         kind="player"
         avatar={{ jersey: 12 }}
-        team={{ initial: 'EP' }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
         label="Player #12"
         isClaimed={false}
       />
       <IdentityCircle
         kind="player"
         avatar={{ jersey: 7 }}
-        team={{ initial: 'WC' }}
+        team={{ src: TEAM_LOGOS.WC, initial: 'WC' }}
         label="Player #7"
         isClaimed={false}
       />
+    </ShowcaseRow>
+  ),
+};
+
+/* Avatar resolution matrix — the four lit branches in a single row.
+   Use this story to validate the fallback chain visually. */
+export const AvatarMatrix: Story = {
+  name: 'Avatar matrix · all four branches',
+  render: () => (
+    <ShowcaseRow>
+      {/* 1. Image branch — team logo */}
+      <IdentityCircle
+        kind="team"
+        avatar={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
+        label="Logo"
+      />
+      {/* 2. Image branch — player profile pic */}
+      <IdentityCircle
+        kind="player"
+        avatar={{ src: SAMPLE_PORTRAITS.sarah, initial: 'S' }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
+        label="Profile pic"
+        isClaimed
+      />
+      {/* 3. Silhouette branch — claimed, no pic */}
+      <IdentityCircle
+        kind="player"
+        avatar={{ initial: 'D' }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
+        label="Silhouette"
+        isClaimed
+      />
+      {/* 4. Jersey branch — unclaimed */}
+      <IdentityCircle
+        kind="player"
+        avatar={{ jersey: 23 }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
+        label="Jersey #"
+        isClaimed={false}
+      />
+      {/* 5. Initial branch — team without logo */}
+      <IdentityCircle kind="team" avatar={{ initial: 'LH' }} label="Initial" />
     </ShowcaseRow>
   ),
 };
@@ -173,19 +235,27 @@ export const KindsAtRest: Story = {
   name: 'Kinds · self / team / claimed / unclaimed',
   render: () => (
     <ShowcaseRow>
-      <IdentityCircle kind="self" avatar={{ initial: 'T' }} label="You" />
-      <IdentityCircle kind="team" avatar={{ initial: 'EP' }} label="Varsity" />
+      <IdentityCircle
+        kind="self"
+        avatar={{ src: SAMPLE_PORTRAITS.tal, initial: 'T' }}
+        label="You"
+      />
+      <IdentityCircle
+        kind="team"
+        avatar={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
+        label="Varsity"
+      />
       <IdentityCircle
         kind="player"
-        avatar={{ initial: 'S' }}
-        team={{ initial: 'EP' }}
+        avatar={{ src: SAMPLE_PORTRAITS.sarah, initial: 'S' }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
         label="Sarah"
         isClaimed
       />
       <IdentityCircle
         kind="player"
         avatar={{ jersey: 23 }}
-        team={{ initial: 'EP' }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
         label="Player #23"
         isClaimed={false}
       />
@@ -198,12 +268,22 @@ export const KindsWithNewDot: Story = {
   name: 'Kinds · with new-content dot',
   render: () => (
     <ShowcaseRow>
-      <IdentityCircle kind="self" avatar={{ initial: 'T' }} label="You" isNew />
-      <IdentityCircle kind="team" avatar={{ initial: 'EP' }} label="Varsity" isNew />
+      <IdentityCircle
+        kind="self"
+        avatar={{ src: SAMPLE_PORTRAITS.tal, initial: 'T' }}
+        label="You"
+        isNew
+      />
+      <IdentityCircle
+        kind="team"
+        avatar={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
+        label="Varsity"
+        isNew
+      />
       <IdentityCircle
         kind="player"
-        avatar={{ initial: 'S' }}
-        team={{ initial: 'EP' }}
+        avatar={{ src: SAMPLE_PORTRAITS.sarah, initial: 'S' }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
         label="Sarah"
         isClaimed
         isNew
@@ -211,7 +291,7 @@ export const KindsWithNewDot: Story = {
       <IdentityCircle
         kind="player"
         avatar={{ jersey: 23 }}
-        team={{ initial: 'EP' }}
+        team={{ src: TEAM_LOGOS.EP, initial: 'EP' }}
         label="Player #23"
         isClaimed={false}
         isNew

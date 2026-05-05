@@ -1,18 +1,22 @@
 import { IdentityCircle, type IdentityCircleProps } from './IdentityCircle';
 import { SEED_GAMES, type FollowState } from './_data';
+import { TEAM_LOGOS, SAMPLE_PORTRAITS } from './_avatars';
 
 /* TEAMS_DB and ROSTER subsets needed for circle rendering — keep local to
-   match prototype behaviour without importing onboarding's full data. */
+   match prototype behaviour without importing onboarding's full data.
+
+   `logoUrl` and `profilePicUrl` are inline-SVG data URIs in storybook;
+   in production, swap to real CMS / user-upload URLs. */
 const TEAMS_DB = [
-  { id: 't1', name: 'Varsity', initial: 'EP' },
-  { id: 't3', name: 'Tigers',  initial: 'LH' },
-  { id: 't4', name: 'Wolves',  initial: 'NA' },
+  { id: 't1', name: 'Varsity', initial: 'EP', logoUrl: TEAM_LOGOS.EP },
+  { id: 't3', name: 'Tigers',  initial: 'LH', logoUrl: undefined },        // demo: no logo → initial fallback
+  { id: 't4', name: 'Wolves',  initial: 'NA', logoUrl: TEAM_LOGOS.NA },
 ];
 
 const ROSTER = [
-  { id: 'r1', name: 'Tal Weiss',     number: 7,  teamId: 't1', claimed: false },
-  { id: 'r2', name: 'Sarah Kim',     number: 12, teamId: 't1', claimed: true  },
-  { id: 'r3', name: 'Dylan Torres',  number: 23, teamId: 't1', claimed: true  },
+  { id: 'r1', name: 'Tal Weiss',     number: 7,  teamId: 't1', claimed: false, profilePicUrl: undefined },
+  { id: 'r2', name: 'Sarah Kim',     number: 12, teamId: 't1', claimed: true,  profilePicUrl: SAMPLE_PORTRAITS.sarah },
+  { id: 'r3', name: 'Dylan Torres',  number: 23, teamId: 't1', claimed: true,  profilePicUrl: undefined }, // demo: claimed but no pic → silhouette
 ];
 
 /* Verbatim port: halo-v3.2-glass.html line 8171.
@@ -29,7 +33,8 @@ export const HighlightCircles = ({ s }: { s: FollowState }) => {
   if (isPlayer) {
     circles.push({
       kind: 'self',
-      avatar: { initial: 'T' },
+      /* Self gets the user's own profile pic if uploaded; demo uses Tal's. */
+      avatar: { src: SAMPLE_PORTRAITS.tal, initial: 'T' },
       label: 'You',
       isNew: newSet.has('self'),
     });
@@ -43,7 +48,8 @@ export const HighlightCircles = ({ s }: { s: FollowState }) => {
       const liveGameId = teamLiveMap.get(team.id);
       return {
         kind: 'team' as const,
-        avatar: { initial: team.initial },
+        /* Logo if the team's CMS supplied one, else 2-letter initial. */
+        avatar: { src: team.logoUrl, initial: team.initial },
         label: team.name,
         isNew: newSet.has(team.id),
         liveGame: liveGameId ? { gameId: liveGameId } : undefined,
@@ -62,10 +68,17 @@ export const HighlightCircles = ({ s }: { s: FollowState }) => {
       const isClaimedHere = !!p.claimed;
       const isUnclaimed = !isClaimedHere;
       const team = TEAMS_DB.find((t) => t.id === p.teamId);
+      /* Avatar resolution per kind:
+           Unclaimed → jersey number
+           Claimed   → uploaded profile pic if any (else IdentityCircle
+                       falls back to the gray silhouette automatically) */
+      const avatar = isUnclaimed
+        ? { jersey: p.number }
+        : { src: p.profilePicUrl, initial: first[0] };
       return {
         kind: 'player' as const,
-        avatar: isUnclaimed ? { jersey: p.number } : { initial: first[0] },
-        team: team ? { initial: team.initial } : undefined,
+        avatar,
+        team: team ? { src: team.logoUrl, initial: team.initial } : undefined,
         label: isUnclaimed ? `Player #${p.number}` : first,
         isClaimed: !isUnclaimed,
         isNew: newSet.has(first.toLowerCase()),
