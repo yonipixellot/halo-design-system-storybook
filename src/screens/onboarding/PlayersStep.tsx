@@ -1,17 +1,25 @@
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { OnboardStepper, OnboardDock } from './_chrome';
 import { PlayersStepPlayer } from './PlayersStepPlayer';
-import { ROSTER, type Persona } from './_data';
+import { TeamRosterAccordion } from './TeamRosterAccordion';
+import { type Persona } from './_data';
 
 /* Verbatim port: halo-v3.2-glass.html line 6962 — parent/fan/coach branch.
    Player branch lives in PlayersStepPlayer.tsx — short-circuited at the
-   top of this function so the parent/coach JSX below stays byte-identical. */
+   top of this function so the parent/coach JSX below stays intact.
+   May 2026: parent/fan flow now uses <TeamRosterAccordion /> grouped by
+   the teams the user followed in step 2. Sort is jersey-number ascending
+   inside each team. Coach branch unchanged. */
 
 export const PlayersStep = ({
+  chosenTeams,
   chosenPlayers,
-  notify,
+  setChosenPlayers,
+  notify: _notify,
   persona,
   togglePlayer,
-  handleNotifyToggle,
+  handleNotifyToggle: _handleNotifyToggle,
   onBack,
   onFinish,
   onSkip,
@@ -19,6 +27,10 @@ export const PlayersStep = ({
 }: {
   chosenTeams: string[];
   chosenPlayers: Record<string, boolean>;
+  /** Optional bulk-set escape hatch for "Follow all" / "Unfollow all" on
+      a team header. Provide it when wiring TeamRosterAccordion;
+      otherwise we fall back to togglePlayer in a loop. */
+  setChosenPlayers?: (next: Record<string, boolean>) => void;
   notify: Record<string, boolean>;
   persona: Persona;
   togglePlayer: (id: string) => void;
@@ -28,6 +40,7 @@ export const PlayersStep = ({
   onSkip?: () => void;
   onClaim?: (teamCode: string) => void;
 }) => {
+  const { t } = useTranslation();
   if (persona === 'player') {
     return (
       <PlayersStepPlayer
@@ -41,128 +54,60 @@ export const PlayersStep = ({
     );
   }
   const totalSelected = Object.keys(chosenPlayers).filter((k) => chosenPlayers[k]).length;
-  const players = ROSTER;
+  const [q, setQ] = useState('');
+
+  /* Fallback when caller doesn't pass setChosenPlayers — apply one
+     toggle at a time. Less efficient but keeps the existing call sites
+     working without breaking changes. */
+  const setMap =
+    setChosenPlayers ??
+    ((next: Record<string, boolean>) => {
+      Object.entries(next).forEach(([id, want]) => {
+        const have = !!chosenPlayers[id];
+        if (have !== want) togglePlayer(id);
+      });
+    });
 
   return (
     <>
       <OnboardStepper step={3} total={3} onBack={onBack} />
       <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-4 pb-[120px] anim-fade">
         <h1 className="sf-display text-[24px] font-bold text-white leading-[1.05] tracking-[-0.025em] mb-2">
-          Follow players
+          {t('roster.title')}
         </h1>
         <p className="sf text-[13px] text-white/65 leading-relaxed mb-6">
-          Pick the players you want to track. We'll surface their drops in your feed.
+          {t('roster.subtitle')}
         </p>
-        <div className="space-y-2">
-          {players.map((p) => {
-            const active = !!chosenPlayers[p.id];
-            const notifying = !!notify[p.id];
-            return (
-              <div
-                key={p.id}
-                className="squircle-md p-3.5 flex items-center gap-3.5"
-                style={
-                  active
-                    ? {
-                        background: 'rgba(0,214,254,0.10)',
-                        backdropFilter: 'blur(36px) saturate(180%)',
-                        WebkitBackdropFilter: 'blur(36px) saturate(180%)',
-                        border: '1px solid rgba(0,214,254,0.55)',
-                      }
-                    : {
-                        background: 'var(--glass-card-bg)',
-                        backdropFilter: 'blur(36px) saturate(180%)',
-                        WebkitBackdropFilter: 'blur(36px) saturate(180%)',
-                        border: '1px solid var(--glass-card-border)',
-                      }
-                }
-              >
-                <div className="w-11 h-11 squircle-sm lg-glass-strong flex flex-col items-center justify-center shrink-0">
-                  <span className="sf text-[8px] tracking-[0.16em] uppercase font-bold text-white/65 leading-none">
-                    NO.
-                  </span>
-                  <span className="sf-display text-[14px] font-bold tabular-nums text-white leading-none mt-0.5">
-                    {p.number}
-                  </span>
-                </div>
-                <button
-                  onClick={() => togglePlayer(p.id)}
-                  className="flex-1 min-w-0 text-start"
-                >
-                  <div className="sf-display text-[14.5px] font-bold text-white truncate">
-                    {p.name}
-                  </div>
-                  <div className="sf text-[11px] text-white/60 truncate mt-0.5">
-                    {p.position}
-                  </div>
-                </button>
-                {/* Notify bell — appears when followed */}
-                {active && (
-                  <button
-                    onClick={() => handleNotifyToggle(p.id, !notifying)}
-                    aria-label={notifying ? 'Mute notifications' : 'Get notifications'}
-                    className="w-9 h-9 squircle-sm flex items-center justify-center shrink-0"
-                    style={
-                      notifying
-                        ? {
-                            background: 'rgba(0,214,254,0.20)',
-                            border: '1px solid rgba(0,214,254,0.55)',
-                            color: '#00D6FE',
-                          }
-                        : {
-                            background: 'var(--hatch-grain)',
-                            border: '1px solid var(--hairline-strong)',
-                            color: 'var(--text-faint)',
-                          }
-                    }
-                  >
-                    <svg
-                      width={14}
-                      height={14}
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={1.7}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M3 5 a4 4 0 0 1 8 0 v3 l1.5 2 H1.5 L3 8 Z" />
-                      <path d="M5.5 11 a1.5 1.5 0 0 0 3 0" />
-                    </svg>
-                  </button>
-                )}
-                {/* Follow toggle */}
-                <button
-                  onClick={() => togglePlayer(p.id)}
-                  className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
-                  style={
-                    active
-                      ? { background: '#00D6FE' }
-                      : {
-                          background: 'var(--hatch-grain)',
-                          border: '1px solid var(--hairline-strong)',
-                        }
-                  }
-                >
-                  {active && (
-                    <svg
-                      width={12}
-                      height={12}
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      stroke="#000"
-                      strokeWidth={2.5}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M3 7 L6 10 L11 4" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            );
-          })}
+        <div className="lg-glass-card squircle-md px-3.5 py-2.5 flex items-center gap-2.5 mb-4">
+          <svg
+            width={16}
+            height={16}
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="var(--text-muted)"
+            strokeWidth={1.6}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ width: 16, height: 16, display: 'block' }}
+          >
+            <circle cx={7} cy={7} r={5} />
+            <path d="M11 11 L14 14" />
+          </svg>
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t('roster.searchPlaceholder')}
+            className="auth-input sf text-[14px]"
+          />
         </div>
+
+        <TeamRosterAccordion
+          teamIds={chosenTeams}
+          chosenPlayers={chosenPlayers}
+          togglePlayer={togglePlayer}
+          setChosenPlayers={setMap}
+          query={q}
+        />
       </div>
       <OnboardDock>
         <button

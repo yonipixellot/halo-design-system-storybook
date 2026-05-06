@@ -5,15 +5,15 @@ import type { Persona } from './_data';
 
 /* Verbatim port: halo-v3.2-glass.html line 6584.
    May 2026 refactor: extracted each row to <PersonaCard /> organism.
-   May 2026 product call: 'coach' persona is hidden from the picker
-   (shipped functionality not ready). The Persona type still includes
-   'coach' so STORYTELLING_DROPS, audience routing, etc. keep working. */
+   May 2026 product call: 'coach' is shown but disabled (functionality
+   not yet ready — keeps the option visible so users know it's coming,
+   but not selectable). Flip `disabled: false` to enable. */
 
-const VISIBLE_PERSONAS: { kind: PersonaCardKind; featured?: boolean }[] = [
+const VISIBLE_PERSONAS: { kind: PersonaCardKind; featured?: boolean; disabled?: boolean }[] = [
   { kind: 'player', featured: true },
   { kind: 'parent' },
   { kind: 'fan' },
-  /* coach intentionally omitted — re-enable by adding `{ kind: 'coach' }` */
+  { kind: 'coach', disabled: true },
 ];
 
 export const PersonaStep = ({ onPick }: { onPick: (p: Persona) => void }) => {
@@ -35,6 +35,7 @@ export const PersonaStep = ({ onPick }: { onPick: (p: Persona) => void }) => {
               key={p.kind}
               kind={p.kind}
               featured={p.featured}
+              disabled={p.disabled}
               onClick={() => onPick(p.kind)}
             />
           ))}

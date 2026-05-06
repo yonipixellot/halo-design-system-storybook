@@ -120,6 +120,32 @@
     "fanSub": "עקוב אחר קבוצות ושחקנים",
     "coachSub": "נהל את הקבוצה שלך"
   },
+  "leagues": {
+    "title": "בחר קבוצות לעקוב",
+    "subtitle": "נציג לך את המשחקים, הדרופים וההילייטים שלהן.",
+    "searchPlaceholder": "חפש קבוצה או ליגה…",
+    "teamsCount_one": "קבוצה אחת",
+    "teamsCount_other": "{{count}} קבוצות",
+    "matches_one": "התאמה אחת",
+    "matches_other": "{{count}} התאמות",
+    "matches": "התאמות",
+    "followed": "במעקב",
+    "allTeams": "כל הקבוצות בליגה",
+    "followAll": "עקוב אחר כולן ({{count}})",
+    "unfollowAll": "הסר מעקב מכולן"
+  },
+  "roster": {
+    "title": "עקוב אחר שחקנים",
+    "subtitle": "בחר את השחקנים שברצונך לעקוב. נציג את הדרופים שלהם בפיד שלך.",
+    "searchPlaceholder": "חפש שחקן או מספר חולצה…",
+    "playersCount_one": "שחקן אחד",
+    "playersCount_other": "{{count}} שחקנים",
+    "allPlayers": "כל השחקנים בקבוצה",
+    "claimed": "נתפס",
+    "no": "מס׳",
+    "empty": "אין סגל זמין לקבוצה הזו.",
+    "noTeamsYet": "עקוב אחר קבוצה אחת לפחות בשלב הקודם כדי לראות פה שחקנים."
+  },
   "fmt": {
     "agoMin": "לפני {{n}} דק׳",
     "agoHr": "לפני {{n}} שעות",

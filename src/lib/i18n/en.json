@@ -120,6 +120,32 @@
     "fanSub": "Follow teams & players",
     "coachSub": "Manage your team"
   },
+  "leagues": {
+    "title": "Pick teams to follow",
+    "subtitle": "We'll show you their games, drops, and highlights.",
+    "searchPlaceholder": "Search any team or league…",
+    "teamsCount_one": "{{count}} team",
+    "teamsCount_other": "{{count}} teams",
+    "matches_one": "{{count}} match",
+    "matches_other": "{{count}} matches",
+    "matches": "matches",
+    "followed": "followed",
+    "allTeams": "All teams in this league",
+    "followAll": "Follow all {{count}}",
+    "unfollowAll": "Unfollow all"
+  },
+  "roster": {
+    "title": "Follow players",
+    "subtitle": "Pick the players you want to track. We'll surface their drops in your feed.",
+    "searchPlaceholder": "Search any player or jersey #…",
+    "playersCount_one": "{{count}} player",
+    "playersCount_other": "{{count}} players",
+    "allPlayers": "All players on this team",
+    "claimed": "Claimed",
+    "no": "No.",
+    "empty": "No roster yet for this team.",
+    "noTeamsYet": "Follow at least one team in the previous step to see players here."
+  },
   "fmt": {
     "agoMin": "{{n}}m ago",
     "agoHr": "{{n}}h ago",
