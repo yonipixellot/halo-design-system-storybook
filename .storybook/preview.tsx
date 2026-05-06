@@ -95,35 +95,8 @@ const ThemeToggle = ({
   </div>
 );
 
-/* Decide which "shell" wraps the story based on the active viewport.
-   - phone: the canonical 393×852 phone shell (current default)
-   - tablet: a wider 834-wide centered card (still device-y)
-   - desktop / desktop-xl: full-bleed canvas — components handle their own
-     responsive behaviour (AppShell, SplitHero) and there's no faux frame
-     getting in the way of the desktop layout */
-type Shell = 'phone' | 'tablet' | 'desktop';
-
-const shellForViewport = (viewportId: string | undefined): Shell => {
-  switch (viewportId) {
-    case 'haloDesktop':
-    case 'haloDesktopXL':
-      return 'desktop';
-    case 'haloTablet':
-      return 'tablet';
-    default:
-      return 'phone';
-  }
-};
-
 const themedDecorator: Decorator = (Story, ctx) => {
   const variant = (ctx.parameters?.wrapper as 'phone' | 'docs' | undefined) ?? 'phone';
-  /* Storybook's viewport addon stores the active selection in
-     globals.viewport.value. Falls back to the default declared in
-     parameters.viewport.defaultViewport. */
-  const viewportId =
-    (ctx.globals as { viewport?: { value?: string } } | undefined)?.viewport?.value ||
-    (ctx.parameters?.viewport as { defaultViewport?: string } | undefined)?.defaultViewport;
-  const shell = shellForViewport(viewportId);
 
   /* Initial value reads from localStorage so navigating between stories
      keeps whatever theme the user picked. */
@@ -191,87 +164,37 @@ const themedDecorator: Decorator = (Story, ctx) => {
     );
   }
 
-  /* Desktop shell — full-bleed canvas, no fake device frame.
-     This is the layout AppShell and SplitHero are designed for. */
-  if (shell === 'desktop') {
-    return (
-      <I18nextProvider i18n={i18n}>
-        <div
-          className="glass-app"
-          data-theme={theme}
-          dir={dir}
-          style={{
-            background: 'var(--canvas-bg)',
-            color: 'var(--text-primary)',
-            minHeight: '100vh',
-            position: 'relative',
-            fontFamily:
-              '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Noto Sans Hebrew", system-ui, sans-serif',
-          }}
-        >
-          <ThemeToggle theme={theme} setTheme={setTheme} pinned="absolute" />
-          <Story />
-        </div>
-      </I18nextProvider>
-    );
-  }
-
-  /* Phone + tablet shells — centered device-frame card. Phone uses the
-     canonical 393×852; tablet uses 834×1112 with the same chrome so it
-     reads as "wider phone" rather than a separate UI. */
-  const dims =
-    shell === 'tablet'
-      ? { width: 834, minHeight: 1112, borderRadius: 36 }
-      : { width: 393, minHeight: 852, borderRadius: 32 };
-
+  /* Full-bleed canvas — works at every viewport. The Storybook viewport
+     addon resizes the iframe itself (393 / 834 / 1280 / 1920), so the
+     story content fills whatever width the iframe is. No fake device
+     frame, no cream-on-the-side backdrop — what you see IS the app. */
   return (
     <I18nextProvider i18n={i18n}>
       <div
+        className="glass-app"
+        data-theme={theme}
+        dir={dir}
         style={{
-          background: theme === 'dark' ? '#0a0a0a' : '#ECE6DA',
+          background: 'var(--canvas-bg)',
+          color: 'var(--text-primary)',
           minHeight: '100vh',
-          padding: '24px 0',
-          margin: 0,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'flex-start',
           position: 'relative',
-          transition: 'background 200ms',
+          overflow: 'hidden',
+          fontFamily:
+            '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Noto Sans Hebrew", system-ui, sans-serif',
         }}
       >
         <ThemeToggle theme={theme} setTheme={setTheme} pinned="absolute" />
-        <div
-          className="glass-app"
-          data-theme={theme}
-          dir={dir}
-          style={{
-            width: dims.width,
-            flex: `0 0 ${dims.width}px`,
-            background: 'var(--canvas-bg)',
-            color: 'var(--text-primary)',
-            position: 'relative',
-            overflow: 'hidden',
-            borderRadius: dims.borderRadius,
-            boxShadow:
-              theme === 'dark'
-                ? '0 24px 60px -12px rgba(0,0,0,0.6)'
-                : '0 24px 60px -12px rgba(60,40,20,0.18)',
-            minHeight: dims.minHeight,
-            transition: 'box-shadow 200ms',
-          }}
-        >
-          <Story />
-        </div>
+        <Story />
       </div>
     </I18nextProvider>
   );
 };
 
 /* Viewport presets — Halo's responsive contract.
-   Phone is the canonical default; the others are review aids. The
-   decorator above renders the phone-shell wrapper for all viewports
-   <lg, and full-canvas for tablet (≥lg portrait) is handled by the
-   component's own responsive classes. */
+   The Storybook viewport addon resizes the iframe to these dimensions;
+   the decorator above renders full-bleed inside the iframe for ALL
+   viewports. There is no fake device frame at any breakpoint. */
 const HALO_VIEWPORTS = {
   haloPhone: {
     name: 'Phone (393)',
