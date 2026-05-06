@@ -4,6 +4,8 @@ import { TeamsStep } from './TeamsStep';
 import { PlayersStep } from './PlayersStep';
 import { ClaimPage } from './ClaimPage';
 import { ClaimedStep } from './ClaimedStep';
+import { Home } from '@/screens/home/Home';
+import type { FollowState } from '@/screens/home/_data';
 import type { Persona } from './_data';
 
 /* Verbatim port: halo-v3.2-glass.html line 6303.
@@ -15,7 +17,7 @@ import type { Persona } from './_data';
                       ClaimPage overlay → [tap jersey, ritual finishes] →
                       claimed → [Continue to Halo] → done. */
 
-type Step = 'persona' | 'teams' | 'players' | 'claimed';
+type Step = 'persona' | 'teams' | 'players' | 'claimed' | 'done';
 
 export const Onboarding = () => {
   const [step, setStep] = useState<Step>('persona');
@@ -43,6 +45,24 @@ export const Onboarding = () => {
   const handleNotifyToggle = (id: string, on: boolean) => {
     setNotify((prev) => ({ ...prev, [id]: on }));
   };
+
+  /* Build the FollowState that Home consumes when onboarding finishes.
+     The Persona type in Home doesn't include 'fan' — fan→parent in the
+     persona picker, so by the time we get here persona is already one of
+     the three Home knows about. */
+  const followState: FollowState = {
+    persona: persona === 'fan' ? 'parent' : persona,
+    followedTeams: chosenTeams,
+    followedPlayers: Object.keys(chosenPlayers).filter((k) => chosenPlayers[k]),
+  };
+
+  /* Once the user finishes onboarding, swap the whole orchestrator out
+     for Home. No transition wrapper — Home owns its own atmosphere /
+     vignette layers, so re-rendering inside the same .glass-app frame
+     gives a clean "you're in" handoff. */
+  if (step === 'done') {
+    return <Home s={followState} />;
+  }
 
   return (
     <div className="absolute inset-0 anim-fade onboard-glass">
@@ -82,15 +102,14 @@ export const Onboarding = () => {
           <PlayersStep
             chosenTeams={chosenTeams}
             chosenPlayers={chosenPlayers}
+            setChosenPlayers={setChosenPlayers}
             notify={notify}
             persona={persona}
             togglePlayer={togglePlayer}
             handleNotifyToggle={handleNotifyToggle}
             onBack={() => setStep('teams')}
-            onFinish={() =>
-              console.log('onboarding complete', { persona, chosenTeams, chosenPlayers, notify })
-            }
-            onSkip={() => console.log('skip onboarding')}
+            onFinish={() => setStep('done')}
+            onSkip={() => setStep('done')}
             onClaim={(teamCode) => setClaimSheet({ teamCode })}
           />
         )}
@@ -98,14 +117,7 @@ export const Onboarding = () => {
           <ClaimedStep
             claimedSelfId={claimedSelfId}
             teamId={chosenTeams[0] || 't1'}
-            onContinue={() =>
-              console.log('onboarding complete (player)', {
-                persona,
-                chosenTeams,
-                claimedSelfId,
-                chosenPlayers,
-              })
-            }
+            onContinue={() => setStep('done')}
           />
         )}
       </div>
