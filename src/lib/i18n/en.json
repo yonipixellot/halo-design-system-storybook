@@ -110,7 +110,15 @@
     "yourPlayers": "Your players",
     "claim": "Claim",
     "claimYourSelf": "Claim your own profile",
-    "skip": "Skip"
+    "skip": "Skip",
+    "welcomeTitle": "Welcome to Halo",
+    "welcomeSub": "Tell us who you are — we'll tune everything to your role."
+  },
+  "persona": {
+    "playerSub": "Your game, your highlights",
+    "parentSub": "Follow your kid's team",
+    "fanSub": "Follow teams & players",
+    "coachSub": "Manage your team"
   },
   "fmt": {
     "agoMin": "{{n}}m ago",
