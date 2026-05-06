@@ -78,16 +78,23 @@ export const PlayerOnboarding = ({
   }
 
   return (
-    <div className="absolute inset-0 anim-fade onboard-glass">
-      <div className="lg-atmosphere" />
-      <div
-        className="absolute inset-0 z-[1] pointer-events-none"
-        style={{
-          background:
-            'linear-gradient(180deg, var(--vignette-corner) 0%, transparent 30%, transparent 70%, var(--vignette-corner-soft) 100%)',
-        }}
-      />
-      <div className="absolute inset-0 z-10 flex flex-col">
+    /* Phone: full-bleed absolute layout with atmosphere. Desktop: each
+       step component owns its own desktop chrome (MomentCanvas /
+       WizardRail / AuthCanvas), so the orchestrator becomes a flow
+       passthrough at lg+. */
+    <div className="absolute inset-0 anim-fade onboard-glass lg:static lg:min-h-screen">
+      {/* Phone-only atmosphere */}
+      <div className="lg:hidden">
+        <div className="lg-atmosphere" />
+        <div
+          className="absolute inset-0 z-[1] pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(180deg, var(--vignette-corner) 0%, transparent 30%, transparent 70%, var(--vignette-corner-soft) 100%)',
+          }}
+        />
+      </div>
+      <div className="absolute inset-0 z-10 flex flex-col lg:static lg:min-h-screen lg:block">
         {step === 'invite-entry' && (
           <PlayerInviteEntry
             teamId={inviteContext.teamId}

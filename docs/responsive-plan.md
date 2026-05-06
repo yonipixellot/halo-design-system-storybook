@@ -41,18 +41,25 @@ Components that need behavioural divergence (not just CSS) consume the hook. Pur
 
 ## 3. App shell architecture (new primitives)
 
-A single `AppShell` layout wraps every **post-login** page on `lg+`. On `<lg` it's a passthrough. **Pre-login flows (Auth, both Onboarding orchestrators) do not use AppShell at all** — they have their own desktop-native layouts (split-screen / multi-column hero) that fill the canvas without any phone frame.
+Five named layout patterns, one per screen family. All ship at `lg+` and degrade to passthrough on `<lg` (phone screens unchanged).
 
 ```
 src/layouts/
-  AppShell.tsx          — SideNav + AppHeader + Main + (RightRail) on lg+; passthrough on <lg
-  SideNav.tsx           — extracted from current bottom-dock destinations
-  AppHeader.tsx         — searchbar, user menu, notifications (lg+ only; phone uses page-local headers)
-  RightRail.tsx         — slot component; pages opt-in
-  SplitHero.tsx         — pre-login template: brand panel + content panel (auth + onboarding share this)
+  HomeShell.tsx         — post-login: SideNav + Main feed (max 720). NO right rail.
+  AuthCanvas.tsx        — auth screens: full-canvas atmosphere + centered glass form card (max 440)
+  MomentCanvas.tsx      — intimate "moment" screens (PlayerInviteEntry, NotifUpsell): atmosphere fills, glass card holds the moment (max 560)
+  WizardRail.tsx        — multi-step onboarding (TeamsStepLocked, ClaimAndFollow): step nav rail at start edge, content at end
+  SideNav.tsx           — vertical primary-nav rail (240/280, inline-start, RTL-safe)
+  AppHeader.tsx         — top bar slot (lg+; phone uses page-local headers)
 ```
 
-**No PhoneFrame primitive.** Desktop is desktop. Pre-login screens use `SplitHero` (or a multi-column variant), post-login screens use `AppShell`. Nothing renders a 393-wide column floating on a wider canvas.
+**Key shape decisions (from May 2026 layout review):**
+- Auth and moment screens get *cinematic* treatment — atmosphere blobs fill the canvas, the form/content lives inside a glass card centered on top.
+- Multi-step onboarding gets a *wizard rail* — the user always sees where they are in the flow, the rail shows all steps with the current one highlighted, content fills the rest.
+- Home is intentionally *quieter* — SideNav + feed only. No right rail. The feed is the product; widgets would compete with it.
+- No `SplitHero`, no `RightRail`, no `PhoneFrame`. The plan in section 4 below replaces them.
+
+**Hard CTA rule.** Primary buttons must NEVER stretch full-width on desktop. Cap at `max-w-[360px]` (or `[400px]` for forms with longer labels). Apply via `.cta-constrained` utility. Phone keeps full-width buttons — only the desktop layouts constrain.
 
 ### SideNav contents (lg+)
 1. Home
@@ -67,39 +74,45 @@ Width: 240 at `lg`, 280 at `xl`. Always at `inline-start`. RTL-safe.
 ### Main column widths
 | Page family | Phone | Tablet (`md`) | Desktop (`lg+`) |
 |---|---|---|---|
-| Feed (Home) | full | max 640 | max 720 + right rail (in AppShell) |
-| Auth | full | max 480 centered | full-canvas SplitHero — brand panel + form panel |
-| Onboarding (player + parent/fan) | full | max 560 centered | full-canvas SplitHero or 2-col grid; CTA bar inline |
+| Feed (Home) | full | max 640 | HomeShell — SideNav + feed (max 720). No right rail. |
+| Auth | full | max 480 centered | AuthCanvas — atmosphere full canvas, glass form card max 440 centered |
+| Moment (PlayerInviteEntry, NotifUpsell) | full | max 560 centered | MomentCanvas — atmosphere full canvas, glass card max 560 centered |
+| Multi-step onboarding (TeamsStepLocked, ClaimAndFollow) | full | max 640 centered | WizardRail — step nav (~280) on start, content (max 720) on end |
 | Viewer (theatre) | full bleed | full bleed | black canvas, player 480 wide centered, info pane 360 at end edge |
-| Settings / list pages | full | max 720 | max 720 (in AppShell) |
+| Settings / list pages | full | max 720 | max 720 (in HomeShell) |
+
+**CTA widths inside these layouts:**
+- Phone: full-width primary buttons (unchanged)
+- Tablet: full-width inside the centered card
+- Desktop: capped at `max-w-[360px]` (CTAs) or `max-w-[400px]` (form submit). Centered or aligned to the form's start edge as appropriate.
 
 ---
 
 ## 4. Per-screen treatment
 
-### Home
+### Home (post-login)
 - **Phone:** unchanged.
-- **Tablet:** content max-w-[640px] mx-auto, more vertical breathing room (`py-` increased). Bottom dock stays.
-- **Desktop:** AppShell with SideNav. Main = feed (max 720). Right rail shows: Next game card, Team status, Daily insight stack — pulled from existing widgets. Header with search + notifications.
-
-### PlayerOnboarding (coach-invite flow)
-- **Phone:** unchanged.
-- **Tablet:** existing screens centered as a 560-wide card. OnboardDock CTA stays at the bottom of the card (not pinned to viewport).
-- **Desktop:** native desktop layouts using `SplitHero` — no phone frame. Per step:
-  - **PlayerInviteEntry** → SplitHero. Brand panel (start edge): coach initials disc large, atmosphere bg, "Welcome to Halo" hero copy. Content panel (end edge): "FROM YOUR COACH" caption, headline, team chip, Sign up / Sign in CTAs.
-  - **TeamsStepLocked** → 2-column inside `SplitHero`. Sticky left: locked-team hero card + step explainer + Continue CTA. Right: scrollable LeagueAccordion of additional teams.
-  - **ClaimAndFollow** → 2-column. Sticky left: step explainer ("Find yourself on the roster"), claimed-self card once picked, Continue CTA. Right: roster as a 2-column **grid of player cards** (more horizontal real estate → grid beats list). Toggle to "Compact list" available.
-  - **NotifUpsell** → centered hero. Bell at hero size (160×160), perks rendered as a 3-column grid below the headline. CTAs full-width inside a max-w-[480px] container.
-
-### Onboarding (parent / fan persona picker)
-- **Phone:** unchanged.
-- **Tablet:** centered card max-w-[560px].
-- **Desktop:** native layouts. Persona picker = 4-card row instead of 2×2 grid. Team / player selection screens = 2-column with explainer + Continue CTA on the start edge, league accordion or roster grid on the end edge. Same `SplitHero` template.
+- **Tablet:** content max-w-[640px] mx-auto, more vertical breathing room. Bottom dock stays.
+- **Desktop (HomeShell):** SideNav (240/280) + Main feed (max 720). NO right rail. The feed is the hero; widgets would compete with it. AppHeader with search + user avatar pinned at top of main column.
 
 ### Auth (SignIn / SignUp / Forgot / Reset)
 - **Phone:** unchanged.
 - **Tablet:** centered card max-w-[480px].
-- **Desktop:** `SplitHero`. Brand panel (start edge, ~55% width): atmosphere bg + cyan halo wordmark + a single rotating hero line. Form panel (end edge, ~45%): centered, max-w-[420px], stacked auth fields + SSO buttons + footer link. RTL mirrors via `inline-start` / `inline-end`.
+- **Desktop (AuthCanvas):** atmosphere fills the full canvas (re-tuned blobs for 1280+ widths so they don't cluster at the start edge). Glass form card centered, `lg-glass-card` treatment, `max-w-[440px]`, padding-block 40, padding-inline 36. Inside the card: HALO wordmark + tagline at top → SSO buttons → "or" divider → email + password (or single email for Forgot) → primary CTA → footer link. **CTA capped at max-w-[400px]** so it doesn't stretch the full card width.
+
+### PlayerOnboarding (coach-invite flow)
+- **Phone:** unchanged.
+- **Tablet:** existing screens centered as a 560-wide card.
+- **Desktop:** per step, by pattern:
+  - **PlayerInviteEntry → MomentCanvas.** Atmosphere fills canvas. Centered glass card max-w-[560px], padding-block 48, padding-inline 40. Inside: HALO + "From Your Coach" eyebrow → coach initials disc (120×120, cyan halo + whistle chip) → "Added by Coach Sarah" caption → "You're in." headline → team chip → body copy → Create my account CTA (max-w-[360px]) → "Already on Halo? Sign in" footer.
+  - **TeamsStepLocked → WizardRail.** Rail (start edge, 280 wide): "Step 1 of 2" eyebrow, all-steps list with current highlighted, step explainer paragraph, Continue CTA pinned at bottom of the rail (capped at 240 inside the rail). Content (end edge, max 720): locked-team hero card pinned at top → LeagueAccordion of additional teams scrolls below.
+  - **ClaimAndFollow → WizardRail.** Rail content same shape. Content: roster as a **2-column grid of player cards** at lg, **3-column** at xl (grid beats list at desktop widths).
+  - **NotifUpsell → MomentCanvas.** Atmosphere fills canvas. Glass card max-w-[560px]. Inside: bell hero (140×140, cyan halo + pulse dot) → "Stay in the moment" headline → body copy → 3-perk grid (3-column at lg+) → "Turn on notifications" CTA (max-w-[360px]) → "Maybe later" footer.
+
+### Onboarding (parent / fan persona picker)
+- **Phone:** unchanged.
+- **Tablet:** centered card max-w-[560px].
+- **Desktop:** persona picker → MomentCanvas with persona cards as a **4-card row** below the headline. Team / player selection screens → WizardRail with the same rail+content split as PlayerOnboarding.
 
 ### Viewer (HighlightViewer + StorytellingDropViewer) — Theatre mode
 - **Phone:** unchanged full-bleed vertical player.

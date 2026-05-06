@@ -5,6 +5,7 @@ import { LeagueAccordion } from './LeagueAccordion';
 import { TEAMS_DB } from './_data';
 import { useLocalized } from '@/screens/home/_data';
 import { TEAM_LOGOS } from '@/screens/home/_avatars';
+import { WizardRail } from '@/layouts/WizardRail';
 
 /* TeamsStepLocked — step 2 of player onboarding (coach-invite flow).
    The team the player was invited to is locked in (auto-followed,
@@ -57,16 +58,45 @@ export const TeamsStepLocked = ({
     }
   };
 
+  /* Continue button — same JSX is used by both the phone OnboardDock and
+     the desktop WizardRail's pinned-CTA slot. */
+  const continueButton = (
+    <button
+      onClick={onNext}
+      className="lg-btn-primary lg-shine lg-aura squircle-md py-4 w-full sf text-[14.5px] font-semibold"
+    >
+      {t('teamsLocked.continue')}
+    </button>
+  );
+
   return (
     <>
-      <OnboardStepper step={1} total={3} onBack={onBack} />
-      <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-4 pb-[120px] anim-fade">
-        <h1 className="sf-display text-[24px] font-bold text-white leading-[1.05] tracking-[-0.025em] mb-2">
-          {t('teamsLocked.title')}
-        </h1>
-        <p className="sf text-[13px] text-white/65 leading-relaxed mb-5">
-          {t('teamsLocked.subtitle')}
-        </p>
+      {/* Phone-only stepper at top */}
+      <div className="lg:hidden">
+        <OnboardStepper step={1} total={3} onBack={onBack} />
+      </div>
+
+      <WizardRail
+        step={1}
+        total={2}
+        steps={[
+          { key: 'teams', label: t('teamsLocked.title'), status: 'current' },
+          { key: 'roster', label: t('claimFollow.title'), status: 'todo' },
+        ]}
+        title={t('teamsLocked.title')}
+        description={t('teamsLocked.subtitle')}
+        cta={continueButton}
+      >
+      <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-4 pb-[120px] lg:flex-none lg:min-h-0 lg:overflow-visible lg:p-0 anim-fade">
+        {/* Phone-only intro — desktop has these in the rail */}
+        <div className="lg:hidden">
+          <h1 className="sf-display text-[24px] font-bold text-white leading-[1.05] tracking-[-0.025em] mb-2">
+            {t('teamsLocked.title')}
+          </h1>
+          <p className="sf text-[13px] text-white/65 leading-relaxed mb-5">
+            {t('teamsLocked.subtitle')}
+          </p>
+        </div>
 
         {/* === Locked-team hero card === */}
         {lockedTeam && (
@@ -176,14 +206,12 @@ export const TeamsStepLocked = ({
         {/* === LeagueAccordion === */}
         <LeagueAccordion chosen={chosen} toggle={toggle} setChosen={setChosenSafe} query={q} />
       </div>
-      <OnboardDock>
-        <button
-          onClick={onNext}
-          className="lg-btn-primary lg-shine lg-aura squircle-md py-4 w-full sf text-[14.5px] font-semibold"
-        >
-          {t('teamsLocked.continue')}
-        </button>
-      </OnboardDock>
+      </WizardRail>
+
+      {/* Phone-only dock — desktop has the CTA inside the WizardRail */}
+      <div className="lg:hidden">
+        <OnboardDock>{continueButton}</OnboardDock>
+      </div>
     </>
   );
 };

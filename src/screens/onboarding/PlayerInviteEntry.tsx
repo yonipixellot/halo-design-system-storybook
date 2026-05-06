@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { TEAMS_DB } from './_data';
 import { useLocalized } from '@/screens/home/_data';
 import { TEAM_LOGOS } from '@/screens/home/_avatars';
+import { MomentCanvas } from '@/layouts/MomentCanvas';
 
 /* PlayerInviteEntry — first screen a player sees after tapping a coach
    invite link. May 2026 build, coach side parked: invite context
@@ -55,7 +56,8 @@ export const PlayerInviteEntry = ({
     team && (TEAM_LOGOS as Record<string, string>)[team.initial];
 
   return (
-    <div className="flex-1 min-h-0 overflow-y-auto px-6 pt-14 pb-[120px] anim-fade flex flex-col">
+    <MomentCanvas>
+      <div className="flex-1 min-h-0 overflow-y-auto px-6 pt-14 pb-[120px] anim-fade flex flex-col lg:flex-none lg:min-h-0 lg:overflow-visible lg:px-0 lg:pt-0 lg:pb-0">
       {/* HALO wordmark — reuses the home-header treatment */}
       <div className="flex items-baseline gap-2 mb-10">
         <span className="sf-display font-bold text-[20px] text-white leading-none">HALO</span>
@@ -202,11 +204,11 @@ export const PlayerInviteEntry = ({
         </p>
       </div>
 
-      {/* Bottom CTAs */}
+      {/* Bottom CTAs — primary CTA capped at 360px on desktop */}
       <div className="shrink-0 mt-6 space-y-3">
         <button
           onClick={onSignUp}
-          className="lg-btn-primary lg-shine lg-aura squircle-md py-4 w-full sf text-[14.5px] font-semibold"
+          className="lg-btn-primary lg-shine lg-aura squircle-md py-4 w-full sf text-[14.5px] font-semibold cta-constrained lg:block"
         >
           {t('invite.signUpCta')}
         </button>
@@ -224,6 +226,7 @@ export const PlayerInviteEntry = ({
           </span>
         </button>
       </div>
-    </div>
+      </div>
+    </MomentCanvas>
   );
 };

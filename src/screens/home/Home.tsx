@@ -11,6 +11,7 @@ import { PackReveal } from './PackReveal';
 import { StorytellingDropViewer } from './StorytellingDropViewer';
 import { SideMenu } from '@/screens/menu/SideMenu';
 import { defaultPlayerState, SEED_MOMENTS, type FollowState } from './_data';
+import { HomeShell } from '@/layouts/HomeShell';
 
 /* Verbatim composition mirroring halo-v3.2-glass.html HomePlayer (line 7491):
    Header → Circles → GameCard → Drops → Following → Storytelling → TeamMoments
@@ -56,15 +57,42 @@ export const Home = ({
     }
   };
 
+  /* The scrolling feed content. Same JSX renders at every viewport;
+     phone wraps it in absolute-positioned chrome below, desktop wraps
+     it in HomeShell (SideNav + Main). */
+  const feedContent = (
+    <>
+      <div className="lg-atmosphere lg:hidden" />
+      <div
+        className="absolute inset-0 z-[1] pointer-events-none lg:hidden"
+        style={{
+          background:
+            'linear-gradient(180deg, var(--vignette-corner) 0%, transparent 30%, transparent 70%, var(--vignette-corner-soft) 100%)',
+        }}
+      />
+      <div className="relative z-10">
+        {/* HomeHeader is phone-only — desktop uses HomeShell's AppHeader */}
+        <div className="lg:hidden">
+          <HomeHeader onMenuOpen={() => setMenuOpen(true)} />
+        </div>
+        <HighlightCircles s={s} />
+        <GameCard state={gameState} onReveal={(gid) => setReveal(gid)} />
+        <DropsSection onPick={handlePick} />
+        <FollowingStrip s={s} />
+        <StorytellingDropsRail audience={s.persona} onOpen={setStoryDrop} />
+        <TeamMomentsRail />
+      </div>
+    </>
+  );
+
   return (
     <div
       className="anim-fade text-white sf"
       style={{ position: 'absolute', inset: 0 }}
     >
-      {/* Scrolling content — Home sections live here. Atmosphere + vignette
-          scroll with the content (matches the prototype's behaviour). */}
+      {/* Phone: absolute-positioned scroll container (existing behaviour) */}
       <div
-        className="pb-28"
+        className="pb-28 lg:hidden"
         style={{
           position: 'absolute',
           inset: 0,
@@ -72,23 +100,13 @@ export const Home = ({
           overflowX: 'hidden',
         }}
       >
-        <div className="lg-atmosphere" />
-        <div
-          className="absolute inset-0 z-[1] pointer-events-none"
-          style={{
-            background:
-              'linear-gradient(180deg, var(--vignette-corner) 0%, transparent 30%, transparent 70%, var(--vignette-corner-soft) 100%)',
-          }}
-        />
-        <div className="relative z-10">
-          <HomeHeader onMenuOpen={() => setMenuOpen(true)} />
-          <HighlightCircles s={s} />
-          <GameCard state={gameState} onReveal={(gid) => setReveal(gid)} />
-          <DropsSection onPick={handlePick} />
-          <FollowingStrip s={s} />
-          <StorytellingDropsRail audience={s.persona} onOpen={setStoryDrop} />
-          <TeamMomentsRail />
-        </div>
+        {feedContent}
+      </div>
+
+      {/* Desktop: HomeShell with SideNav + Main, atmosphere off, feed
+          flows in the main column with natural document scroll */}
+      <div className="hidden lg:block lg:absolute lg:inset-0 lg:overflow-y-auto">
+        <HomeShell sideNav={{ active: 'home' }}>{feedContent}</HomeShell>
       </div>
 
       {/* Modals — siblings of the scroll container, so their absolute-fill

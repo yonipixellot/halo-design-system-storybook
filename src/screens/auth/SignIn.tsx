@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  AuthAtmosphere,
   ClientLogoHero,
   AuthModeToggle,
   GlassField,
@@ -10,6 +9,7 @@ import {
   AuthSpinner,
   type AuthDispatch,
 } from './_shared';
+import { AuthCanvas } from '@/layouts/AuthCanvas';
 
 /* Verbatim port: halo-v3.2-glass.html line 5133.
    Plus error / loading state props so the FE team can drive the UI from
@@ -45,9 +45,9 @@ export const SignInScreen = ({
   const goForgot = () => dispatch({ type: 'SET_AUTH_STEP', step: 'forgot' });
 
   return (
-    <AuthAtmosphere>
+    <AuthCanvas>
       <ClientLogoHero />
-      <div className="px-6 pt-6 anim-fade">
+      <div className="px-6 pt-6 lg:px-0 lg:pt-4 anim-fade">
         <AuthModeToggle mode="signin" onChange={(m) => m === 'signup' && goSignUp()} />
 
         <AuthErrorBanner message={error} />
@@ -81,11 +81,12 @@ export const SignInScreen = ({
           />
         </div>
 
-        {/* Primary CTA */}
+        {/* Primary CTA — capped at 400px on desktop so it doesn't span
+            the entire form column. Phone keeps full-width. */}
         <button
           onClick={signIn}
           disabled={!valid || loading}
-          className="mt-5 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full sf text-[14.5px] font-semibold"
+          className="mt-5 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full lg:max-w-[400px] lg:mx-auto lg:block sf text-[14.5px] font-semibold"
         >
           {loading ? <AuthSpinner label="Signing in…" /> : 'Sign in'}
         </button>
@@ -134,6 +135,6 @@ export const SignInScreen = ({
           <span className="underline text-white/55">Privacy Policy</span>.
         </p>
       </div>
-    </AuthAtmosphere>
+    </AuthCanvas>
   );
 };
