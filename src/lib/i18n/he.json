@@ -70,6 +70,14 @@
     "yours": "שלך",
     "halloDropCount": "דרופ הילו · {{count}} רגעים"
   },
+  "nav": {
+    "primary": "ניווט ראשי",
+    "home": "בית",
+    "drops": "דרופים",
+    "following": "במעקב",
+    "notifications": "התראות",
+    "searchPlaceholder": "חפש דרופים, שחקנים, קבוצות…"
+  },
   "menu": {
     "title": "תפריט",
     "language": "שפה",

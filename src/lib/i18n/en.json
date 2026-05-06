@@ -70,6 +70,14 @@
     "yours": "Yours",
     "halloDropCount": "HALO Drop · {{count}} Moments"
   },
+  "nav": {
+    "primary": "Primary navigation",
+    "home": "Home",
+    "drops": "Drops",
+    "following": "Following",
+    "notifications": "Notifications",
+    "searchPlaceholder": "Search drops, players, teams…"
+  },
   "menu": {
     "title": "Menu",
     "language": "Language",
