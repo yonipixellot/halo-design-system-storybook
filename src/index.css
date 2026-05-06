@@ -41,6 +41,24 @@
 [dir='rtl'] .icon-flip-rtl {
   transform: scaleX(-1);
 }
+
+/* Native date / time picker calendar glyph — Chrome / Safari render it
+   as a pure-black SVG by default, which disappears on dark canvases.
+   Invert + dim it so it reads against any glass surface in dark mode,
+   leave the light-mode default alone. Touchable on click as usual. */
+.glass-app[data-theme='dark'] input[type='date']::-webkit-calendar-picker-indicator,
+.glass-app[data-theme='dark'] input[type='time']::-webkit-calendar-picker-indicator,
+.glass-app[data-theme='dark'] input[type='datetime-local']::-webkit-calendar-picker-indicator,
+.glass-app[data-theme='dark'] input[type='month']::-webkit-calendar-picker-indicator,
+.glass-app[data-theme='dark'] input[type='week']::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.55;
+  cursor: pointer;
+}
+.glass-app[data-theme='dark'] input[type='date']::-webkit-calendar-picker-indicator:hover,
+.glass-app[data-theme='dark'] input[type='time']::-webkit-calendar-picker-indicator:hover {
+  opacity: 0.9;
+}
 .font-mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; }
 
 /* ----- Phone container (used by Storybook decorators to mimic device) ----- */

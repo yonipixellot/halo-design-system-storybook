@@ -134,6 +134,52 @@
     "followAll": "Follow all {{count}}",
     "unfollowAll": "Unfollow all"
   },
+  "invite": {
+    "fromCoach": "FROM YOUR COACH",
+    "addedBy": "ADDED BY {{coach}}",
+    "welcomeTitle": "You're in.",
+    "welcomeSub": "Halo turns your games into shareable drops. Let's get you on the roster.",
+    "signUpCta": "Create my account",
+    "signInPrompt": "Already on Halo?",
+    "signInCta": "Sign in"
+  },
+  "teamsLocked": {
+    "title": "Pick more teams",
+    "subtitle": "Your team is locked in. Follow more if you want.",
+    "yourTeamCaption": "YOUR TEAM",
+    "lockedPill": "Auto-following",
+    "moreTeams": "Follow more teams",
+    "continue": "Continue"
+  },
+  "claimFollow": {
+    "title": "Find yourself on the roster",
+    "subtitle": "Tap the player that's you. We'll follow your teammates automatically.",
+    "rosterFor": "{{team}} roster",
+    "thisIsMe": "This is me",
+    "claimedByYou": "Claimed by you",
+    "playingAs": "PLAYING AS",
+    "change": "Change",
+    "yourTeammatesCount_one": "YOUR TEAMMATE · 1 auto-followed",
+    "yourTeammatesCount_other": "YOUR TEAMMATES · {{count}} auto-followed",
+    "tapToUnfollow": "Tap a player to unfollow",
+    "notOnRoster": "I'm not on this roster yet",
+    "modalTitle": "Tell your coach",
+    "modalBody": "We'll let {{coach}} know you're trying to join. They'll add you on the next roster sync.",
+    "modalCta": "Notify coach",
+    "modalSkip": "I'll claim later",
+    "modalSent": "Coach has been notified",
+    "continueDisabled": "Pick yourself to continue",
+    "continueEnabled": "Continue"
+  },
+  "notifUpsell": {
+    "title": "Stay in the moment",
+    "body": "Get your drops the moment they land. Never miss a play.",
+    "perk1": "Live game alerts",
+    "perk2": "New drops from your team",
+    "perk3": "Highlights of you",
+    "allow": "Turn on notifications",
+    "skip": "Maybe later"
+  },
   "roster": {
     "title": "Follow players",
     "subtitle": "Pick the players you want to track. We'll surface their drops in your feed.",

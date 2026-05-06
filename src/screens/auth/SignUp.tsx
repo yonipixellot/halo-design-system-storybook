@@ -71,6 +71,25 @@ export const SignUpScreen = ({
 
   const pwOk = password.length >= 8 && /[A-Z]/.test(password) && /[0-9]/.test(password);
   const pwMatch = !confirmPw || password === confirmPw;
+
+  /* === Age gate (COPPA / GDPR-K) ===
+     Halo signup is restricted to ages 13+. We derive age from the
+     native input's yyyy-mm-dd string, then short-circuit the form when
+     under 13 — no email, password, gender, or country is collected
+     beyond what's already typed. The user can edit the birth date to
+     correct a typo; the rest of the form re-appears as soon as the
+     date represents an age ≥ 13. */
+  const dob = birthDate ? new Date(birthDate) : null;
+  const isValidDob = !!dob && !isNaN(dob.getTime());
+  let age: number | null = null;
+  if (isValidDob && dob) {
+    const today = new Date();
+    age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+  }
+  const isUnder13 = age !== null && age < 13;
+
   const valid =
     name.length > 1 &&
     email.includes('@') &&
@@ -79,7 +98,8 @@ export const SignUpScreen = ({
     confirmPw.length > 0 &&
     birthDate.length > 0 &&
     gender.length > 0 &&
-    country.length > 0;
+    country.length > 0 &&
+    !isUnder13;
 
   const signUp = () => dispatch({ type: 'SIGN_IN' });
   const goSignIn = () => dispatch({ type: 'SET_AUTH_STEP', step: 'signin' });
@@ -279,7 +299,11 @@ export const SignUpScreen = ({
               (confirmPw.length > 0 && !pwMatch ? "Passwords don't match" : null)
             }
           />
-          <div className="grid grid-cols-2 gap-3">
+          {/* Birth date stays editable in both states so the user can
+              correct a typo without losing context. Gender + Country
+              hide under the U13 gate — no extra info collected once we
+              know the user can't sign up. */}
+          {isUnder13 ? (
             <GlassField
               label="Birth date"
               type="date"
@@ -287,59 +311,137 @@ export const SignUpScreen = ({
               onChange={setBirthDate}
               placeholder="dd/mm/yyyy"
             />
-            <GlassSelect
-              label="Gender"
-              value={gender}
-              onChange={setGender}
-              options={GENDERS}
-              placeholder="Select…"
-            />
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-3">
+                <GlassField
+                  label="Birth date"
+                  type="date"
+                  value={birthDate}
+                  onChange={setBirthDate}
+                  placeholder="dd/mm/yyyy"
+                />
+                <GlassSelect
+                  label="Gender"
+                  value={gender}
+                  onChange={setGender}
+                  options={GENDERS}
+                  placeholder="Select…"
+                />
+              </div>
+              <GlassSelect
+                label="Country"
+                value={country}
+                onChange={setCountry}
+                options={COUNTRIES}
+                placeholder="Select your country…"
+              />
+            </>
+          )}
+        </div>
+
+        {isUnder13 ? (
+          /* === U13 age gate ===
+             COPPA / GDPR-K-friendly: replace the rest of the form with
+             a soft, empathetic "come back at 13" message. Form fields
+             above (birth date, etc.) stay editable so the user can
+             correct a typo'd year without losing context. */
+          <div
+            className="mt-6 squircle-md p-5"
+            style={{
+              background:
+                'radial-gradient(ellipse 75% 60% at 22% 25%, rgba(0,214,254,0.18) 0%, transparent 60%),' +
+                'var(--glass-card-bg)',
+              backdropFilter: 'blur(36px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(36px) saturate(180%)',
+              border: '1px solid var(--brand-cyan-border)',
+              boxShadow: 'inset 0 1px 0 var(--glass-card-inset-top), 0 8px 30px -10px rgba(0,214,254,0.20)',
+            }}
+            role="status"
+            aria-live="polite"
+          >
+            <div className="flex items-start gap-3">
+              <div
+                className="w-12 h-12 squircle-sm flex items-center justify-center shrink-0"
+                style={{
+                  background: 'var(--brand-cyan-soft)',
+                  border: '1px solid var(--brand-cyan-border)',
+                  color: 'var(--brand-cyan-text)',
+                }}
+              >
+                {/* Calendar with a heart inside — friendlier than a generic clock */}
+                <svg
+                  width={22}
+                  height={22}
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.7}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ width: 22, height: 22, display: 'block' }}
+                >
+                  <rect x="3" y="5" width="16" height="14" rx="2.5" />
+                  <path d="M7 3 V7 M15 3 V7 M3 10 H19" />
+                  <path d="M11 16 c-1 -1.2 -3 -1.2 -3 0.4 c0 1.5 3 3 3 3 s3 -1.5 3 -3 c0 -1.6 -2 -1.6 -3 -0.4 Z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <div
+                  className="sf-display text-[16px] font-bold leading-tight tracking-[-0.01em]"
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  Halo is for ages 13+
+                </div>
+                <p
+                  className="sf text-[12.5px] leading-relaxed mt-1.5"
+                  style={{ color: 'var(--text-tertiary)' }}
+                >
+                  Come back on your 13th birthday.
+                </p>
+              </div>
+            </div>
           </div>
-          <GlassSelect
-            label="Country"
-            value={country}
-            onChange={setCountry}
-            options={COUNTRIES}
-            placeholder="Select your country…"
-          />
-        </div>
+        ) : (
+          <>
+            <button
+              onClick={signUp}
+              disabled={!valid || loading}
+              className="mt-6 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full sf text-[14.5px] font-semibold"
+            >
+              {loading ? <AuthSpinner label="Creating account…" /> : 'Continue'}
+            </button>
 
-        <button
-          onClick={signUp}
-          disabled={!valid || loading}
-          className="mt-6 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full sf text-[14.5px] font-semibold"
-        >
-          {loading ? <AuthSpinner label="Creating account…" /> : 'Continue'}
-        </button>
+            <div className="flex items-center gap-3 my-5">
+              <div className="flex-1 h-px" style={{ background: 'var(--hairline-strong)' }} />
+              <span className="sf text-[10px] tracking-[0.18em] uppercase text-white/45 font-semibold">or</span>
+              <div className="flex-1 h-px" style={{ background: 'var(--hairline-strong)' }} />
+            </div>
 
-        <div className="flex items-center gap-3 my-5">
-          <div className="flex-1 h-px" style={{ background: 'var(--hairline-strong)' }} />
-          <span className="sf text-[10px] tracking-[0.18em] uppercase text-white/45 font-semibold">or</span>
-          <div className="flex-1 h-px" style={{ background: 'var(--hairline-strong)' }} />
-        </div>
+            <div className="space-y-2.5">
+              <button
+                onClick={signUp}
+                className="lg-glass squircle-md py-3 w-full flex items-center justify-center gap-2.5 sf text-[13.5px] font-semibold text-white"
+              >
+                <AppleIcon />
+                Sign up with Apple
+              </button>
+              <button
+                onClick={signUp}
+                className="lg-glass squircle-md py-3 w-full flex items-center justify-center gap-2.5 sf text-[13.5px] font-semibold text-white"
+              >
+                <GoogleIcon />
+                Sign up with Google
+              </button>
+            </div>
 
-        <div className="space-y-2.5">
-          <button
-            onClick={signUp}
-            className="lg-glass squircle-md py-3 w-full flex items-center justify-center gap-2.5 sf text-[13.5px] font-semibold text-white"
-          >
-            <AppleIcon />
-            Sign up with Apple
-          </button>
-          <button
-            onClick={signUp}
-            className="lg-glass squircle-md py-3 w-full flex items-center justify-center gap-2.5 sf text-[13.5px] font-semibold text-white"
-          >
-            <GoogleIcon />
-            Sign up with Google
-          </button>
-        </div>
-
-        <p className="mt-7 px-2 sf text-[10.5px] leading-relaxed text-white/35 text-center">
-          By creating an account you agree to our{' '}
-          <span className="underline text-white/55">Terms</span> and{' '}
-          <span className="underline text-white/55">Privacy Policy</span>.
-        </p>
+            <p className="mt-7 px-2 sf text-[10.5px] leading-relaxed text-white/35 text-center">
+              By creating an account you agree to our{' '}
+              <span className="underline text-white/55">Terms</span> and{' '}
+              <span className="underline text-white/55">Privacy Policy</span>.
+            </p>
+          </>
+        )}
       </div>
     </AuthAtmosphere>
   );

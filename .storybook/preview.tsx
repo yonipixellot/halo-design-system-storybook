@@ -8,7 +8,37 @@ import '../src/index.css';
    top-right of the canvas and flips data-theme on the .glass-app wrapper.
    Stories opt out of the phone-column wrap by setting:
      parameters: { wrapper: 'docs' }
-   Docs pages render at full canvas width with the same toggle. */
+   Docs pages render at full canvas width with the same toggle.
+
+   Theme is persisted to localStorage so it survives page-to-page
+   navigation in Storybook. A custom DOM event keeps every decorator
+   instance in sync when one of them flips the toggle. */
+
+type Theme = 'dark' | 'light';
+
+const THEME_STORAGE_KEY = 'halo-storybook-theme';
+const THEME_EVENT = 'halo-storybook-theme-change';
+
+const getStoredTheme = (): Theme => {
+  if (typeof window === 'undefined') return 'dark';
+  try {
+    const v = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return v === 'light' ? 'light' : 'dark';
+  } catch {
+    return 'dark';
+  }
+};
+
+const writeStoredTheme = (theme: Theme) => {
+  try {
+    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch {
+    /* private mode / quota — fall back to in-memory state only */
+  }
+  window.dispatchEvent(
+    new CustomEvent<Theme>(THEME_EVENT, { detail: theme }),
+  );
+};
 
 const ThemeToggle = ({
   theme,
@@ -67,7 +97,36 @@ const ThemeToggle = ({
 
 const themedDecorator: Decorator = (Story, ctx) => {
   const variant = (ctx.parameters?.wrapper as 'phone' | 'docs' | undefined) ?? 'phone';
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  /* Initial value reads from localStorage so navigating between stories
+     keeps whatever theme the user picked. */
+  const [theme, setThemeState] = useState<Theme>(() => getStoredTheme());
+
+  /* Subscribe to theme changes coming from other decorator instances
+     (custom event) and from other browser tabs (storage event). */
+  useEffect(() => {
+    const onCustom = (e: Event) => {
+      const t = (e as CustomEvent<Theme>).detail;
+      if (t === 'dark' || t === 'light') setThemeState(t);
+    };
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== THEME_STORAGE_KEY) return;
+      if (e.newValue === 'dark' || e.newValue === 'light') {
+        setThemeState(e.newValue);
+      }
+    };
+    window.addEventListener(THEME_EVENT, onCustom as EventListener);
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener(THEME_EVENT, onCustom as EventListener);
+      window.removeEventListener('storage', onStorage);
+    };
+  }, []);
+
+  const setTheme = (next: Theme) => {
+    setThemeState(next);
+    writeStoredTheme(next);
+  };
+
   /* Track the current i18n language so we can apply dir on the .glass-app
      wrapper. The language itself is changed from the in-app SideMenu
      LanguagePage (not via Storybook chrome) per the May 2026 build plan. */
