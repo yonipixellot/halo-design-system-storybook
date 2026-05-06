@@ -1,4 +1,5 @@
 import { TEAM_RECAPS, useT, useLocalized, type RecapKind } from './_data';
+import { Rail } from '@/layouts/Rail';
 
 const fmtDur = (sec: number): string => {
   const m = Math.floor(sec / 60);
@@ -29,7 +30,7 @@ export const TeamMomentsRail = () => {
           {t('common.watch')} <span className="icon-flip-rtl">›</span>
         </button>
       </div>
-      <div className="flex gap-3 px-5 overflow-x-auto pb-1 no-scrollbar">
+      <Rail className="px-5 lg:px-8 xl:px-12">
         {TEAM_RECAPS.map((r) => {
           const w = 280;
           const h = Math.round((w * 9) / 16); // ~158
@@ -88,7 +89,7 @@ export const TeamMomentsRail = () => {
             </button>
           );
         })}
-      </div>
+      </Rail>
     </div>
   );
 };

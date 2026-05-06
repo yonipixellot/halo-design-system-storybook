@@ -14,22 +14,29 @@ export interface HomeShellProps {
   children: ReactNode;
   sideNav?: SideNavProps;
   header?: AppHeaderProps;
-  /** Constrains the main feed max-width. Default 720. */
-  mainMaxWidth?: number;
+  /** Constrains the main column max-width at lg+. Pass a number for a
+      hard cap, or 'full' to let the feed use whatever width is left
+      after SideNav. Default: 'full'. */
+  mainMaxWidth?: number | 'full';
 }
 
 export const HomeShell = ({
   children,
   sideNav,
   header,
-  mainMaxWidth = 720,
+  mainMaxWidth = 'full',
 }: HomeShellProps) => (
   <div className="lg:flex lg:min-h-screen w-full">
     <SideNav {...(sideNav ?? {})} />
     <div className="flex-1 min-w-0 lg:flex lg:flex-col">
       <AppHeader {...(header ?? {})} />
-      <main className="flex-1 min-w-0 lg:py-6 lg:px-8 xl:px-12">
-        <div className="mx-auto w-full" style={{ maxWidth: mainMaxWidth }}>
+      <main className="flex-1 min-w-0 lg:py-6">
+        <div
+          className="mx-auto w-full"
+          style={{
+            maxWidth: mainMaxWidth === 'full' ? undefined : mainMaxWidth,
+          }}
+        >
           {children}
         </div>
       </main>

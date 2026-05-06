@@ -1,4 +1,5 @@
 import { STORYTELLING_DROPS, useT, useLocalized, type Audience, type StorytellingDrop } from './_data';
+import { Rail } from '@/layouts/Rail';
 
 /* Verbatim port: halo-v3.2-glass.html line 9186 (StorytellingCard) + 9148 (Rail). */
 
@@ -128,11 +129,11 @@ export const StorytellingDropsRail = ({
           {t('common.all')} <span className="icon-flip-rtl">›</span>
         </button>
       </div>
-      <div className="flex gap-3 px-5 overflow-x-auto pb-1 no-scrollbar">
+      <Rail className="px-5 lg:px-8 xl:px-12">
         {items.map((item) => (
           <StorytellingCard key={item.id} item={item} onOpen={onOpen} />
         ))}
-      </div>
+      </Rail>
     </div>
   );
 };

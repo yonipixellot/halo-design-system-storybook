@@ -1,4 +1,5 @@
 import { SEED_GAMES, fmt, useT, useLocalized, type FollowState } from './_data';
+import { Rail } from '@/layouts/Rail';
 
 /* Verbatim port: halo-v3.2-glass.html line 7575 */
 
@@ -26,7 +27,7 @@ export const FollowingStrip = ({ s }: { s: FollowState }) => {
           {t('common.manage')} <span className="icon-flip-rtl">›</span>
         </button>
       </div>
-      <div className="flex gap-3 px-5 overflow-x-auto pb-1 no-scrollbar">
+      <Rail className="px-5 lg:px-8 xl:px-12">
         {upcomingFollowed.map((g) => (
           <button
             key={g.id}
@@ -70,7 +71,7 @@ export const FollowingStrip = ({ s }: { s: FollowState }) => {
             </div>
           </button>
         ))}
-      </div>
+      </Rail>
     </div>
   );
 };

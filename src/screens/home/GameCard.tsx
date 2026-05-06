@@ -49,7 +49,7 @@ export const GameCard = ({
 
   if (state === 'error') {
     return (
-      <div className="px-4 mt-3 mb-4">
+      <div className="px-4 mt-3 mb-4 lg:px-8 xl:px-12 lg:max-w-[840px] lg:mx-auto">
         <GameCardError onRetry={onRetry} onReport={onReport} />
       </div>
     );

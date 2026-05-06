@@ -3,6 +3,7 @@ export { AppHeader, type AppHeaderProps } from './AppHeader';
 export { AuthCanvas, type AuthCanvasProps } from './AuthCanvas';
 export { HomeShell, type HomeShellProps } from './HomeShell';
 export { MomentCanvas, type MomentCanvasProps } from './MomentCanvas';
+export { Rail, type RailProps } from './Rail';
 export { RightRail, type RightRailProps } from './RightRail';
 export {
   SideNav,

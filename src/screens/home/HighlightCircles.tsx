@@ -1,6 +1,7 @@
 import { IdentityCircle, type IdentityCircleProps } from './IdentityCircle';
 import { SEED_GAMES, useT, useLocalized, type FollowState } from './_data';
 import { TEAM_LOGOS, SAMPLE_PORTRAITS } from './_avatars';
+import { Rail } from '@/layouts/Rail';
 
 /* TEAMS_DB and ROSTER subsets needed for circle rendering — keep local to
    match prototype behaviour without importing onboarding's full data.
@@ -155,10 +156,10 @@ export const HighlightCircles = ({ s }: { s: FollowState }) => {
   }
 
   return (
-    <div className="flex gap-4 px-5 pt-2 pb-5 overflow-x-auto no-scrollbar">
+    <Rail className="px-5 lg:px-8 xl:px-12 pt-2 pb-5" gap="gap-4">
       {circles.map((c, i) => (
         <IdentityCircle key={i} {...c} />
       ))}
-    </div>
+    </Rail>
   );
 };

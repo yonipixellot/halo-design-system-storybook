@@ -1,5 +1,6 @@
 import { EditorialDropThumb } from './EditorialDropThumb';
 import { SEED_MOMENTS, useT, type Moment } from './_data';
+import { Rail } from '@/layouts/Rail';
 
 /* Verbatim port: halo-v3.2-glass.html line 9502.
    Empty state added (not in prototype) for the day-one case where the
@@ -80,11 +81,11 @@ export const DropsSection = ({
           </div>
         </div>
       ) : (
-        <div className="flex gap-3 px-5 overflow-x-auto pb-1 no-scrollbar">
+        <Rail className="px-5 lg:px-8 xl:px-12">
           {recent.map((m, i) => (
             <EditorialDropThumb key={m.id} moment={m} onClick={() => onPick?.(m.id, i)} />
           ))}
-        </div>
+        </Rail>
       )}
     </div>
   );
