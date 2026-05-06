@@ -84,7 +84,7 @@ export const ClaimAthleteExplainer = ({ onClaim }: ClaimAthleteExplainerProps) =
           <path d="M9 12 a3 3 0 0 0 4.24 0 l3 -3 a3 3 0 0 0 -4.24 -4.24 l -1 1" />
           <path d="M11 8 a3 3 0 0 0 -4.24 0 l -3 3 a3 3 0 0 0 4.24 4.24 l 1 -1" />
         </svg>
-        <span className="sf text-[12px] truncate flex-1 text-left" style={{ color: 'var(--text-secondary)' }}>
+        <span className="sf text-[12px] truncate flex-1 text-start" style={{ color: 'var(--text-secondary)' }}>
           halo.app/claim/varsity-eastside-2026
         </span>
         <span

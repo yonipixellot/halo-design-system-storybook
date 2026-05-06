@@ -111,17 +111,16 @@ export const IdentityCircle = ({
           />
         </div>
 
-        {/* New content dot — top-LEFT so it sits diagonally opposite the
-            bottom-right crest (no collision when player has both new
-            content + a team crest). Floats outside the ring on canvas
-            so the halo border reads. */}
+        {/* New content dot — top inline-START so it sits diagonally opposite
+            the bottom inline-END crest (no collision when player has both
+            new content + a team crest). Auto-flips in RTL. */}
         {isNew && !isLive && (
           <div
             className="absolute rounded-full"
             title="New highlights"
             style={{
               top: -2,
-              left: -2,
+              insetInlineStart: -2,
               width: 14,
               height: 14,
               background: 'var(--brand-cyan)',
@@ -132,7 +131,7 @@ export const IdentityCircle = ({
           />
         )}
 
-        {/* Team crest — bottom-right inside the bounding box (no overhang).
+        {/* Team crest — bottom inline-END inside the bounding box (no overhang).
             May 2026 polish: thicker border (2px), drop-shadow halo so the
             crest visually detaches from the ring instead of bleeding into it. */}
         {kind === 'player' && team && (
@@ -140,7 +139,7 @@ export const IdentityCircle = ({
             className="absolute rounded-full overflow-hidden flex items-center justify-center"
             style={{
               bottom: 0,
-              right: 0,
+              insetInlineEnd: 0,
               width: 'var(--crest-size)',
               height: 'var(--crest-size)',
               background: 'var(--canvas-bg-soft)',

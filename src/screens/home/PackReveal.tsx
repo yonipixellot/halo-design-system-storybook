@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { cls } from '@/lib/cls';
-import { findGame, ROSTER_LITE, SEED_GAMES, SEED_MOMENTS, type Moment } from './_data';
+import { findGame, ROSTER_LITE, SEED_GAMES, SEED_MOMENTS, useT, useLocalized, type Moment } from './_data';
 
 /* Holographic card-pack reveal ceremony — replaces the prototype's
    monochrome wireframe (bg-white / font-mono) with a cinematic dark
@@ -47,7 +47,7 @@ const VThumb = ({ moment, onClick }: { moment: Moment; onClick?: () => void }) =
             height={14}
             viewBox="0 0 12 14"
             fill="currentColor"
-            className="text-white ml-0.5"
+            className="text-white ms-0.5"
             style={{ width: 12, height: 14, display: 'block' }}
           >
             <path d="M0 1.2v11.6c0 .9 1 1.4 1.7 1l9.6-5.8c.7-.4.7-1.5 0-1.9L1.7.2C1 -.2 0 .3 0 1.2z" />
@@ -55,7 +55,7 @@ const VThumb = ({ moment, onClick }: { moment: Moment; onClick?: () => void }) =
         </div>
       </div>
       {durationStr && (
-        <div className="absolute top-2 left-2 lg-glass squircle-sm px-1.5 py-0.5 z-10">
+        <div className="absolute top-2 start-2 lg-glass squircle-sm px-1.5 py-0.5 z-10">
           <span className="sf text-[9.5px] font-semibold text-white/90 leading-none tabular-nums">
             {durationStr}
           </span>
@@ -217,6 +217,8 @@ export const PackReveal = ({ gameId, onDismiss, onOpenMoment }: PackRevealProps)
   const moments = SEED_MOMENTS.filter((m) => m.gameId === gameId);
   const [stage, setStage] = useState<'locked' | 'revealing' | 'reveal'>('locked');
 
+  const t = useT();
+  const localized = useLocalized();
   useEffect(() => {
     const t1 = setTimeout(() => setStage('revealing'), 600);
     const t2 = setTimeout(() => setStage('reveal'), 1700);
@@ -327,7 +329,7 @@ export const PackReveal = ({ gameId, onDismiss, onOpenMoment }: PackRevealProps)
                   textShadow: '0 0 12px rgba(0,214,254,0.65)',
                 }}
               >
-                YOUR DROP IS UNLOCKED
+                {t('home.yourDropIsUnlocked')}
               </div>
               <div
                 className="sf-display text-[24px] font-bold tracking-[-0.02em] leading-none"
@@ -336,7 +338,7 @@ export const PackReveal = ({ gameId, onDismiss, onOpenMoment }: PackRevealProps)
                   textShadow: '0 0 24px rgba(0,214,254,0.45), 0 4px 14px rgba(0,0,0,0.55)',
                 }}
               >
-                {game?.home} <span style={{ color: 'rgba(255,255,255,0.45)' }}>vs</span> {game?.away}
+                {game ? localized(game, 'home') : ''} <span style={{ color: 'rgba(255,255,255,0.45)' }}>{t('common.vs')}</span> {game ? localized(game, 'away') : ''}
               </div>
               {game && game.scoreHome != null && (
                 <div
@@ -352,7 +354,7 @@ export const PackReveal = ({ gameId, onDismiss, onOpenMoment }: PackRevealProps)
                     className="sf text-[9.5px] font-bold tracking-[0.18em] uppercase"
                     style={{ color: 'rgba(255,255,255,0.55)' }}
                   >
-                    FINAL
+                    {t('home.final')}
                   </span>
                   <span
                     className="sf-display text-[13px] font-bold tabular-nums"
@@ -387,7 +389,7 @@ export const PackReveal = ({ gameId, onDismiss, onOpenMoment }: PackRevealProps)
               style={{ animationDelay: `${200 + moments.length * 80 + 80}ms` }}
             >
               <span>Added to your drops</span>
-              <span className="text-[14px] leading-none">›</span>
+              <span className="text-[14px] leading-none icon-flip-rtl">›</span>
             </button>
           </div>
         )}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { cls } from '@/lib/cls';
-import { fmt, type Game } from './_data';
+import { fmt, useT, useLocalized, type Game } from './_data';
 import { JerseyPicker } from './JerseyPicker';
 
 /* Verbatim port: halo-v3.2-glass.html line 8525.
@@ -23,10 +23,12 @@ export const GameCardPre = ({
   onJerseyConfirm,
   onJerseyToast,
 }: GameCardPreProps) => {
+  const t = useT();
+  const localized = useLocalized();
   const [remaining, setRemaining] = useState(Math.max(0, Math.min(game.kickoffInSec ?? 7200, 7200)));
   useEffect(() => {
-    const t = setInterval(() => setRemaining((r) => Math.max(0, r - 1)), 1000);
-    return () => clearInterval(t);
+    const tick = setInterval(() => setRemaining((r) => Math.max(0, r - 1)), 1000);
+    return () => clearInterval(tick);
   }, []);
 
   const isImminent = remaining > 0 && remaining < 600;
@@ -61,7 +63,7 @@ export const GameCardPre = ({
             className="sf text-[10px] font-bold tracking-[0.16em] uppercase"
             style={{ color: 'var(--brand-cyan-text)' }}
           >
-            {parent ? "TAL'S NEXT GAME" : isImminent ? 'STARTING SOON' : 'DROP INCOMING · PRE-GAME'}
+            {parent ? t('home.talsNextGame') : isImminent ? t('home.startingSoon') : t('home.dropIncomingPreGame')}
           </span>
         </div>
       </div>
@@ -71,13 +73,13 @@ export const GameCardPre = ({
           className="sf-display text-[20px] font-bold tracking-[-0.015em] leading-none"
           style={{ color: 'var(--text-primary)' }}
         >
-          {game.home}
+          {localized(game, 'home')}
         </div>
         <div className="sf text-[12.5px] mt-1" style={{ color: 'var(--text-secondary)' }}>
-          vs {game.away}
+          {t('common.vs')} {localized(game, 'away')}
         </div>
         <div className="sf text-[11px] mt-1" style={{ color: 'var(--text-tertiary)' }}>
-          {game.venue || 'Eastside Gym'}
+          {localized(game, 'venue') || 'Eastside Gym'}
         </div>
       </div>
 
@@ -92,7 +94,7 @@ export const GameCardPre = ({
           {fmt.countdown(remaining)}
         </div>
         <span className="sf text-[11px]" style={{ color: 'var(--text-tertiary)' }}>
-          until tipoff
+          {t('home.tipoff').toLowerCase()}
         </span>
       </div>
 

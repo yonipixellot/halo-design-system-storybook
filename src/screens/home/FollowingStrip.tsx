@@ -1,9 +1,10 @@
-import { SEED_GAMES, fmt, useT, type FollowState } from './_data';
+import { SEED_GAMES, fmt, useT, useLocalized, type FollowState } from './_data';
 
 /* Verbatim port: halo-v3.2-glass.html line 7575 */
 
 export const FollowingStrip = ({ s }: { s: FollowState }) => {
   const t = useT();
+  const localized = useLocalized();
   if (s.followedTeams.length === 0 && s.followedPlayers.length === 0) return null;
   const upcomingFollowed = SEED_GAMES.filter(
     (g) => g.status === 'upcoming' && s.followedTeams.includes(g.teamId),
@@ -17,17 +18,19 @@ export const FollowingStrip = ({ s }: { s: FollowState }) => {
           <h2 className="sf-display text-[17px] font-bold tracking-[-0.015em] text-white leading-tight">
             {t('followingUpcoming')}
           </h2>
-          <p className="sf text-[12px] text-white/55 mt-0.5">Tipoffs from your followed teams</p>
+          <p className="sf text-[12px] text-white/55 mt-0.5">
+            {/* Reuse the followingUpcoming concept; no separate subtitle key for now */}
+          </p>
         </div>
         <button className="sf text-[11px] font-semibold text-halo-cyan tracking-tight">
-          Manage <span>›</span>
+          {t('common.manage')} <span className="icon-flip-rtl">›</span>
         </button>
       </div>
       <div className="flex gap-3 px-5 overflow-x-auto pb-1 no-scrollbar">
         {upcomingFollowed.map((g) => (
           <button
             key={g.id}
-            className="shrink-0 squircle-md overflow-hidden text-left lg-aura lg-shine relative"
+            className="shrink-0 squircle-md overflow-hidden text-start lg-aura lg-shine relative"
             style={{
               width: 240,
               height: 120,
@@ -46,7 +49,7 @@ export const FollowingStrip = ({ s }: { s: FollowState }) => {
                   'radial-gradient(ellipse 70% 60% at 80% 70%, rgba(132,88,255,0.12) 0%, transparent 60%)',
               }}
             />
-            <div className="absolute top-3 left-3 lg-glass squircle-sm px-2 py-0.5">
+            <div className="absolute top-3 start-3 lg-glass squircle-sm px-2 py-0.5">
               <span className="sf text-[9.5px] font-semibold tracking-[0.12em] uppercase text-white/85 leading-none">
                 Upcoming
               </span>
@@ -59,10 +62,10 @@ export const FollowingStrip = ({ s }: { s: FollowState }) => {
               }}
             >
               <div className="sf-display text-[14px] font-bold text-white leading-tight tracking-[-0.01em] truncate">
-                {g.home} vs {g.away}
+                {localized(g, 'home')} {t('common.vs')} {localized(g, 'away')}
               </div>
               <div className="sf text-[11px] text-white/65 mt-0.5">
-                Tipoff {fmt.countdown(g.kickoffInSec)}
+                {t('home.tipoff')} {fmt.countdown(g.kickoffInSec)}
               </div>
             </div>
           </button>

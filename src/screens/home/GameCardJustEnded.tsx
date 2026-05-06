@@ -1,4 +1,4 @@
-import type { Game } from './_data';
+import { useT, useLocalized, type Game } from './_data';
 
 /* Verbatim port: halo-v3.2-glass.html line 8861.
    Score's final, drop is being assembled. Animated cyan ring around the
@@ -8,7 +8,10 @@ export interface GameCardJustEndedProps {
   game: Game;
 }
 
-export const GameCardJustEnded = ({ game }: GameCardJustEndedProps) => (
+export const GameCardJustEnded = ({ game }: GameCardJustEndedProps) => {
+  const t = useT();
+  const localized = useLocalized();
+  return (
   <div
     className="relative squircle-md overflow-hidden"
     style={{
@@ -35,14 +38,14 @@ export const GameCardJustEnded = ({ game }: GameCardJustEndedProps) => (
           className="sf text-[10px] font-bold tracking-[0.14em] uppercase"
           style={{ color: 'var(--brand-cyan-text)' }}
         >
-          YOUR DROP IS BEING PREPARED
+          {t('home.dropIncomingPreGame')}
         </span>
       </div>
       <span
         className="sf text-[10px] font-bold tracking-[0.14em] uppercase"
         style={{ color: 'var(--text-tertiary)' }}
       >
-        FINAL
+        {t('home.final')}
       </span>
     </div>
 
@@ -52,10 +55,10 @@ export const GameCardJustEnded = ({ game }: GameCardJustEndedProps) => (
           className="sf-display text-[15px] font-bold tracking-[-0.01em] leading-tight"
           style={{ color: 'var(--text-primary)' }}
         >
-          {game.home}
+          {localized(game, 'home')}
         </div>
         <div className="sf text-[11.5px] mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-          vs {game.away}
+          {t('common.vs')} {localized(game, 'away')}
         </div>
       </div>
       <div
@@ -131,4 +134,5 @@ export const GameCardJustEnded = ({ game }: GameCardJustEndedProps) => (
       </div>
     </div>
   </div>
-);
+  );
+};

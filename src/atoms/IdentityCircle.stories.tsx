@@ -167,7 +167,7 @@ const LoadingRing = ({
           className="absolute rounded-full overflow-hidden"
           style={{
             bottom: 0,
-            right: 0,
+            insetInlineEnd: 0,
             width: 'var(--crest-size)',
             height: 'var(--crest-size)',
             background: 'var(--canvas-bg-soft)',

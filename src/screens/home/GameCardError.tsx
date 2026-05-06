@@ -98,7 +98,7 @@ export const GameCardError = ({ onRetry, onReport }: GameCardErrorProps) => (
         style={{ color: 'var(--brand-cyan-text)' }}
       >
         <span>Report a bug</span>
-        <span className="text-[14px] leading-none">›</span>
+        <span className="text-[14px] leading-none icon-flip-rtl">›</span>
       </button>
     </div>
   </div>

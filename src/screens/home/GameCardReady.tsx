@@ -16,7 +16,7 @@ export const GameCardReady = ({ game, onReveal }: GameCardReadyProps) => {
   return (
     <button
       onClick={() => onReveal?.(game.id)}
-      className="relative w-full text-left squircle-md overflow-hidden lg-aura lg-shine lg-ready-ember active:scale-[0.98]"
+      className="relative w-full text-start squircle-md overflow-hidden lg-aura lg-shine lg-ready-ember active:scale-[0.98]"
       style={{
         background:
           'radial-gradient(ellipse 60% 70% at 22% 28%, rgba(0,214,254,0.18) 0%, transparent 60%),' +
@@ -48,7 +48,7 @@ export const GameCardReady = ({ game, onReveal }: GameCardReadyProps) => {
           className="sf text-[10px] font-bold tracking-[0.14em] uppercase"
           style={{ color: 'var(--brand-cyan-text)' }}
         >
-          TAP ›
+          TAP <span className="icon-flip-rtl">›</span>
         </span>
       </div>
 
@@ -114,7 +114,7 @@ export const GameCardReady = ({ game, onReveal }: GameCardReadyProps) => {
                 Moments
               </span>
             </div>
-            <div className="text-right">
+            <div className="text-end">
               <div
                 className="sf-display text-[20px] font-bold tabular-nums leading-none"
                 style={{ color: 'var(--brand-cyan-text)', textShadow: '0 0 12px rgba(0,214,254,0.45)' }}

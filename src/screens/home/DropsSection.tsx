@@ -24,13 +24,13 @@ export const DropsSection = ({
             <span className="lg-brand-dot" />
             {t('dropsThisWeek')}
           </h2>
-          <p className="sf text-[12px] text-white/55 mt-0.5 ml-[14px]">
-            Your top moments, ready to share
+          <p className="sf text-[12px] text-white/55 mt-0.5 ms-[14px]">
+            {t('home.dropsThisWeekSubtitle')}
           </p>
         </div>
         {!isEmpty && (
           <button className="sf text-[11px] font-semibold text-halo-cyan tracking-tight">
-            All <span>›</span>
+            {t('common.all')} <span className="icon-flip-rtl">›</span>
           </button>
         )}
       </div>

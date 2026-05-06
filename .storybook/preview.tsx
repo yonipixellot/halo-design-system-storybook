@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Preview, Decorator } from '@storybook/react';
+import { I18nextProvider } from 'react-i18next';
+import i18n, { dirFor } from '../src/lib/i18n';
 import '../src/index.css';
 
 /* One global theme toggle for every story. The pill is pinned to the
@@ -66,64 +68,82 @@ const ThemeToggle = ({
 const themedDecorator: Decorator = (Story, ctx) => {
   const variant = (ctx.parameters?.wrapper as 'phone' | 'docs' | undefined) ?? 'phone';
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  /* Track the current i18n language so we can apply dir on the .glass-app
+     wrapper. The language itself is changed from the in-app SideMenu
+     LanguagePage (not via Storybook chrome) per the May 2026 build plan. */
+  const [lang, setLang] = useState<string>(i18n.language || 'en');
+  useEffect(() => {
+    const handler = (l: string) => setLang(l);
+    i18n.on('languageChanged', handler);
+    return () => {
+      i18n.off('languageChanged', handler);
+    };
+  }, []);
+  const dir = dirFor(lang);
 
   if (variant === 'docs') {
     return (
-      <div
-        className="glass-app"
-        data-theme={theme}
-        style={{
-          background: 'var(--canvas-bg)',
-          color: 'var(--text-primary)',
-          minHeight: '100vh',
-          padding: '24px 40px 80px',
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", system-ui, sans-serif',
-        }}
-      >
-        <ThemeToggle theme={theme} setTheme={setTheme} pinned="sticky" />
-        <Story />
-      </div>
+      <I18nextProvider i18n={i18n}>
+        <div
+          className="glass-app"
+          data-theme={theme}
+          dir={dir}
+          style={{
+            background: 'var(--canvas-bg)',
+            color: 'var(--text-primary)',
+            minHeight: '100vh',
+            padding: '24px 40px 80px',
+            fontFamily:
+              '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Noto Sans Hebrew", system-ui, sans-serif',
+          }}
+        >
+          <ThemeToggle theme={theme} setTheme={setTheme} pinned="sticky" />
+          <Story />
+        </div>
+      </I18nextProvider>
     );
   }
 
   return (
-    <div
-      style={{
-        background: theme === 'dark' ? '#0a0a0a' : '#ECE6DA',
-        minHeight: '100vh',
-        padding: '24px 0',
-        margin: 0,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        position: 'relative',
-        transition: 'background 200ms',
-      }}
-    >
-      <ThemeToggle theme={theme} setTheme={setTheme} pinned="absolute" />
+    <I18nextProvider i18n={i18n}>
       <div
-        className="glass-app"
-        data-theme={theme}
         style={{
-          width: 393,
-          flex: '0 0 393px',
-          background: 'var(--canvas-bg)',
-          color: 'var(--text-primary)',
+          background: theme === 'dark' ? '#0a0a0a' : '#ECE6DA',
+          minHeight: '100vh',
+          padding: '24px 0',
+          margin: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
           position: 'relative',
-          overflow: 'hidden',
-          borderRadius: 32,
-          boxShadow:
-            theme === 'dark'
-              ? '0 24px 60px -12px rgba(0,0,0,0.6)'
-              : '0 24px 60px -12px rgba(60,40,20,0.18)',
-          minHeight: 852,
-          transition: 'box-shadow 200ms',
+          transition: 'background 200ms',
         }}
       >
-        <Story />
+        <ThemeToggle theme={theme} setTheme={setTheme} pinned="absolute" />
+        <div
+          className="glass-app"
+          data-theme={theme}
+          dir={dir}
+          style={{
+            width: 393,
+            flex: '0 0 393px',
+            background: 'var(--canvas-bg)',
+            color: 'var(--text-primary)',
+            position: 'relative',
+            overflow: 'hidden',
+            borderRadius: 32,
+            boxShadow:
+              theme === 'dark'
+                ? '0 24px 60px -12px rgba(0,0,0,0.6)'
+                : '0 24px 60px -12px rgba(60,40,20,0.18)',
+            minHeight: 852,
+            transition: 'box-shadow 200ms',
+          }}
+        >
+          <Story />
+        </div>
       </div>
-    </div>
+    </I18nextProvider>
   );
 };
 

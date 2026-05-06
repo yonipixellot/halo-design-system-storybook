@@ -197,7 +197,7 @@ export const ClaimPage = ({ teamCode, onClose, onClaimed, onAskCoach }: ClaimPag
                 </div>
                 {claimedAlready && (
                   <div
-                    className="absolute top-1.5 right-1.5 sf text-[8px] tracking-[0.12em] uppercase font-bold px-1.5 py-0.5 squircle-sm"
+                    className="absolute top-1.5 end-1.5 sf text-[8px] tracking-[0.12em] uppercase font-bold px-1.5 py-0.5 squircle-sm"
                     style={{ background: 'var(--text-faint)', color: 'var(--canvas-bg)' }}
                   >
                     Taken

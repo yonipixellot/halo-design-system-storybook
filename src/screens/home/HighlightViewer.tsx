@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { findMoment, findGame, ROSTER_LITE } from './_data';
+import { findMoment, findGame, ROSTER_LITE, useT, useLocalized } from './_data';
 import { ShareSheet, type ShareTargetId } from './ShareSheet';
 
 /* Verbatim port: halo-v3.2-glass.html line 13517.
@@ -26,6 +26,8 @@ export const HighlightViewer = ({
 }: HighlightViewerProps) => {
   const [i, setI] = useState(index);
   const [shareOpen, setShareOpen] = useState(false);
+  const t = useT();
+  const localized = useLocalized();
   const m = findMoment(ids[i]);
   if (!m) return null;
   const game = findGame(m.gameId);
@@ -33,7 +35,7 @@ export const HighlightViewer = ({
     ROSTER_LITE.find((p) => p.id === m.personId) ||
     (m.personId === 'self' ? ROSTER_LITE[0] : null);
   const isPlayerHL = !!player;
-  const sectionLabel = isPlayerHL ? 'Player Highlights' : 'Team Moments';
+  const sectionLabel = isPlayerHL ? t('viewer.playerHighlights') : t('viewer.teamMoment');
   const jerseyNum = player ? player.number : null;
   const lower = m.title.toLowerCase();
   const caption =
@@ -56,7 +58,7 @@ export const HighlightViewer = ({
     >
       {/* === Top bar — story progress segments + close === */}
       <div className="absolute top-0 inset-x-0 z-30 px-4 pt-11 flex items-center justify-between">
-        <div className="flex gap-1 flex-1 mr-4">
+        <div className="flex gap-1 flex-1 me-4">
           {ids.map((_, idx) => (
             <div
               key={idx}
@@ -87,7 +89,7 @@ export const HighlightViewer = ({
       </div>
 
       {/* === Section chip — jersey badge + label === */}
-      <div className="absolute top-[68px] left-4 z-30 flex items-center gap-2 lg-glass-strong squircle-sm pl-1 pr-2.5 py-1">
+      <div className="absolute top-[68px] start-4 z-30 flex items-center gap-2 lg-glass-strong squircle-sm ps-1 pe-2.5 py-1">
         {jerseyNum != null && (
           <div
             className="w-6 h-6 squircle-sm flex items-center justify-center shrink-0"
@@ -110,12 +112,12 @@ export const HighlightViewer = ({
         {/* Tap zones */}
         <button
           onClick={() => setI(Math.max(0, i - 1))}
-          className="absolute left-0 top-0 bottom-0 w-1/3 z-10"
+          className="absolute start-0 top-0 bottom-0 w-1/3 z-10"
           aria-label="Previous"
         />
         <button
           onClick={() => setI(Math.min(ids.length - 1, i + 1))}
-          className="absolute right-0 top-0 bottom-0 w-1/3 z-10"
+          className="absolute end-0 top-0 bottom-0 w-1/3 z-10"
           aria-label="Next"
         />
 
@@ -134,7 +136,7 @@ export const HighlightViewer = ({
               height={26}
               viewBox="0 0 22 26"
               fill="#fff"
-              style={{ marginLeft: 4, filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.40))' }}
+              style={{ marginInlineStart: 4, filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.40))' }}
             >
               <path d="M2 2 L20 13 L2 24 Z" />
             </svg>
@@ -161,7 +163,7 @@ export const HighlightViewer = ({
                     style={{ background: '#00D6FE', boxShadow: '0 0 6px rgba(0,214,254,0.85)' }}
                   />
                   <span className="sf text-[10px] tracking-[0.14em] uppercase font-bold" style={{ color: '#00D6FE' }}>
-                    Yours
+                    {t('viewer.yours')}
                   </span>
                 </>
               )}
@@ -170,10 +172,10 @@ export const HighlightViewer = ({
               className="sf-display text-white font-bold tracking-[-0.025em] leading-[1.0] mb-2"
               style={{ fontSize: 30, textShadow: '0 2px 12px rgba(0,0,0,0.45)' }}
             >
-              {isPlayerHL && jerseyNum != null ? `#${jerseyNum} Player Highlight` : 'Team Moment'}
+              {isPlayerHL && jerseyNum != null ? `#${jerseyNum} ${t('viewer.playerHighlights')}` : t('viewer.teamMoment')}
             </div>
             <div className="sf text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
-              {m.title || caption || (game ? `${game.home} vs ${game.away}` : '')}
+              {localized(m, 'title') || caption || (game ? `${localized(game, 'home')} ${t('common.vs')} ${localized(game, 'away')}` : '')}
             </div>
 
             {game && (
@@ -191,7 +193,7 @@ export const HighlightViewer = ({
                   <div className="w-7 h-7 rounded-full lg-glass-strong flex items-center justify-center sf-display text-[10px] font-bold text-white">
                     {game.home.charAt(0)}
                   </div>
-                  <span className="sf text-[11.5px] font-semibold text-white">{game.home}</span>
+                  <span className="sf text-[11.5px] font-semibold text-white">{localized(game, 'home')}</span>
                 </div>
                 <div className="sf-display text-[18px] font-bold tabular-nums text-white leading-none flex items-center gap-2">
                   <span>{game.scoreHome}</span>
@@ -199,7 +201,7 @@ export const HighlightViewer = ({
                   <span>{game.scoreAway}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="sf text-[11.5px] font-semibold text-white">{game.away}</span>
+                  <span className="sf text-[11.5px] font-semibold text-white">{localized(game, 'away')}</span>
                   <div className="w-7 h-7 rounded-full lg-glass-strong flex items-center justify-center sf-display text-[10px] font-bold text-white">
                     {game.away.charAt(0)}
                   </div>
@@ -218,7 +220,7 @@ export const HighlightViewer = ({
                 <svg width={11} height={12} viewBox="0 0 11 12" fill="currentColor">
                   <path d="M1 1 L10 6 L1 11 Z" />
                 </svg>
-                <span>Watch full game</span>
+                <span>{t('viewer.watchFullGame')}</span>
               </button>
               <button
                 onClick={() => setShareOpen(true)}
@@ -249,8 +251,8 @@ export const HighlightViewer = ({
           after a target picks. */}
       {shareOpen && (
         <ShareSheet
-          title={isPlayerHL && jerseyNum != null ? `#${jerseyNum} Player Highlight` : 'Team Moment'}
-          subtitle={game ? `${game.home} vs ${game.away}` : undefined}
+          title={isPlayerHL && jerseyNum != null ? `#${jerseyNum} ${t('viewer.playerHighlights')}` : t('viewer.teamMoment')}
+          subtitle={game ? `${localized(game, 'home')} ${t('common.vs')} ${localized(game, 'away')}` : undefined}
           url={`halo.app/m/${m.id}`}
           thumbnail={jerseyNum != null ? String(jerseyNum) : undefined}
           onShare={(targetId) => onShare?.(targetId)}

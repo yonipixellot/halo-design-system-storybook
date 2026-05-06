@@ -47,7 +47,7 @@ export const PersonaStep = ({ onPick }: { onPick: (p: Persona) => void }) => {
             <button
               key={p.key}
               onClick={() => onPick(p.key)}
-              className="w-full text-left squircle-md p-4 flex items-center gap-3.5 lg-aura lg-shine relative overflow-hidden"
+              className="w-full text-start squircle-md p-4 flex items-center gap-3.5 lg-aura lg-shine relative overflow-hidden"
               style={
                 p.featured
                   ? {

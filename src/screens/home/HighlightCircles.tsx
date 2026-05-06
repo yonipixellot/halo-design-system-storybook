@@ -1,5 +1,5 @@
 import { IdentityCircle, type IdentityCircleProps } from './IdentityCircle';
-import { SEED_GAMES, type FollowState } from './_data';
+import { SEED_GAMES, useT, useLocalized, type FollowState } from './_data';
 import { TEAM_LOGOS, SAMPLE_PORTRAITS } from './_avatars';
 
 /* TEAMS_DB and ROSTER subsets needed for circle rendering — keep local to
@@ -8,20 +8,22 @@ import { TEAM_LOGOS, SAMPLE_PORTRAITS } from './_avatars';
    `logoUrl` and `profilePicUrl` are inline-SVG data URIs in storybook;
    in production, swap to real CMS / user-upload URLs. */
 const TEAMS_DB = [
-  { id: 't1', name: 'Varsity', initial: 'EP', logoUrl: TEAM_LOGOS.EP },
-  { id: 't3', name: 'Tigers',  initial: 'LH', logoUrl: undefined },        // demo: no logo → initial fallback
-  { id: 't4', name: 'Wolves',  initial: 'NA', logoUrl: TEAM_LOGOS.NA },
+  { id: 't1', name: 'Varsity', name_he: 'ורסיטי', initial: 'EP', logoUrl: TEAM_LOGOS.EP },
+  { id: 't3', name: 'Tigers',  name_he: 'הנמרים', initial: 'LH', logoUrl: undefined },
+  { id: 't4', name: 'Wolves',  name_he: 'הזאבים', initial: 'NA', logoUrl: TEAM_LOGOS.NA },
 ];
 
 const ROSTER = [
-  { id: 'r1', name: 'Tal Weiss',     number: 7,  teamId: 't1', claimed: false, profilePicUrl: undefined },
-  { id: 'r2', name: 'Sarah Kim',     number: 12, teamId: 't1', claimed: true,  profilePicUrl: SAMPLE_PORTRAITS.sarah },
-  { id: 'r3', name: 'Dylan Torres',  number: 23, teamId: 't1', claimed: true,  profilePicUrl: undefined }, // demo: claimed but no pic → silhouette
+  { id: 'r1', name: 'Tal Weiss',     name_he: 'טל וייס',     number: 7,  teamId: 't1', claimed: false, profilePicUrl: undefined },
+  { id: 'r2', name: 'Sarah Kim',     name_he: 'שרה קים',     number: 12, teamId: 't1', claimed: true,  profilePicUrl: SAMPLE_PORTRAITS.sarah },
+  { id: 'r3', name: 'Dylan Torres',  name_he: 'דילן טורס',   number: 23, teamId: 't1', claimed: true,  profilePicUrl: undefined },
 ];
 
 /* Verbatim port: halo-v3.2-glass.html line 8171.
    Sort order:  YOU → followed teams (live first) → followed players (claimed first). */
 export const HighlightCircles = ({ s }: { s: FollowState }) => {
+  const t = useT();
+  const localized = useLocalized();
   const isPlayer = s.persona === 'player';
   const newSet = new Set(['t1', 'sarah', 'self']);
   const liveGames = SEED_GAMES.filter((g) => g.status === 'live');
@@ -35,7 +37,7 @@ export const HighlightCircles = ({ s }: { s: FollowState }) => {
       kind: 'self',
       /* Self gets the user's own profile pic if uploaded; demo uses Tal's. */
       avatar: { src: SAMPLE_PORTRAITS.tal, initial: 'T' },
-      label: 'You',
+      label: t('home.youLabel'),
       isNew: newSet.has('self'),
     });
   }
@@ -50,7 +52,7 @@ export const HighlightCircles = ({ s }: { s: FollowState }) => {
         kind: 'team' as const,
         /* Logo if the team's CMS supplied one, else 2-letter initial. */
         avatar: { src: team.logoUrl, initial: team.initial },
-        label: team.name,
+        label: localized(team, 'name'),
         isNew: newSet.has(team.id),
         liveGame: liveGameId ? { gameId: liveGameId } : undefined,
       };
@@ -64,7 +66,8 @@ export const HighlightCircles = ({ s }: { s: FollowState }) => {
     .map((pid) => {
       const p = ROSTER.find((x) => x.id === pid);
       if (!p) return null;
-      const first = p.name.split(' ')[0];
+      const fullName = localized(p, 'name');
+      const first = fullName.split(' ')[0];
       const isClaimedHere = !!p.claimed;
       const isUnclaimed = !isClaimedHere;
       const team = TEAMS_DB.find((t) => t.id === p.teamId);
@@ -79,7 +82,7 @@ export const HighlightCircles = ({ s }: { s: FollowState }) => {
         kind: 'player' as const,
         avatar,
         team: team ? { src: team.logoUrl, initial: team.initial } : undefined,
-        label: isUnclaimed ? `Player #${p.number}` : first,
+        label: isUnclaimed ? t('home.playerN', { n: p.number }) : first,
         isClaimed: !isUnclaimed,
         isNew: newSet.has(first.toLowerCase()),
       };
@@ -125,12 +128,12 @@ export const HighlightCircles = ({ s }: { s: FollowState }) => {
               <path d="M7 2 V12 M2 7 H12" />
             </svg>
           </div>
-          <div className="flex-1 min-w-0 text-left">
+          <div className="flex-1 min-w-0 text-start">
             <div className="sf text-[13.5px] font-semibold text-white leading-tight">
-              Follow your team &amp; players
+              {t('home.followYourTeamPlayers')}
             </div>
             <div className="sf text-[11.5px] text-white/65 mt-0.5">
-              See their drops the moment they land.
+              {t('home.followYourTeamPlayersSub')}
             </div>
           </div>
           <svg

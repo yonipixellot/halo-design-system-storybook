@@ -1,4 +1,4 @@
-import { TEAM_RECAPS, useT, type RecapKind } from './_data';
+import { TEAM_RECAPS, useT, useLocalized, type RecapKind } from './_data';
 
 const fmtDur = (sec: number): string => {
   const m = Math.floor(sec / 60);
@@ -15,6 +15,7 @@ const kindHue: Record<RecapKind, { a: string; b: string; tag: string }> = {
 /* Verbatim port: halo-v3.2-glass.html line 9563. */
 export const TeamMomentsRail = () => {
   const t = useT();
+  const localized = useLocalized();
   return (
     <div className="mb-7">
       <div className="px-5 mb-3 flex items-end justify-between">
@@ -22,10 +23,10 @@ export const TeamMomentsRail = () => {
           <h2 className="sf-display text-[17px] font-bold tracking-[-0.015em] text-white leading-tight">
             {t('teamMoments')}
           </h2>
-          <p className="sf text-[12px] text-white/55 mt-0.5">Recaps, top plays & defining runs</p>
+          <p className="sf text-[12px] text-white/55 mt-0.5">{t('home.teamMomentsSubtitle')}</p>
         </div>
         <button className="sf text-[11px] font-semibold text-halo-cyan tracking-tight">
-          Watch <span>›</span>
+          {t('common.watch')} <span className="icon-flip-rtl">›</span>
         </button>
       </div>
       <div className="flex gap-3 px-5 overflow-x-auto pb-1 no-scrollbar">
@@ -36,7 +37,7 @@ export const TeamMomentsRail = () => {
           return (
             <button
               key={r.id}
-              className="relative shrink-0 overflow-hidden text-left squircle-md lg-aura lg-shine"
+              className="relative shrink-0 overflow-hidden text-start squircle-md lg-aura lg-shine"
               style={{
                 width: w,
                 height: h,
@@ -51,13 +52,13 @@ export const TeamMomentsRail = () => {
               }}
             >
               <div className="absolute inset-0 hatch opacity-40" />
-              <div className="absolute top-3 left-3 lg-glass-strong squircle-sm px-2 py-0.5 z-10">
+              <div className="absolute top-3 start-3 lg-glass-strong squircle-sm px-2 py-0.5 z-10">
                 <span className="sf text-[9.5px] font-bold tracking-[0.16em] uppercase text-white leading-none">
                   {hue.tag}
                 </span>
               </div>
               {r.duration && (
-                <div className="absolute top-3 right-3 lg-glass squircle-sm px-2 py-0.5 z-10">
+                <div className="absolute top-3 end-3 lg-glass squircle-sm px-2 py-0.5 z-10">
                   <span className="sf text-[10px] font-semibold text-white/85 leading-none tabular-nums">
                     {fmtDur(r.duration)}
                   </span>
@@ -66,7 +67,7 @@ export const TeamMomentsRail = () => {
               {/* Centered play glyph */}
               <div className="absolute inset-0 flex items-center justify-center z-10">
                 <div className="w-12 h-12 rounded-full lg-glass-strong flex items-center justify-center">
-                  <svg width={14} height={16} viewBox="0 0 12 14" fill="currentColor" className="text-white ml-0.5" aria-hidden="true">
+                  <svg width={14} height={16} viewBox="0 0 12 14" fill="currentColor" className="text-white ms-0.5" aria-hidden="true">
                     <path d="M0 1.2v11.6c0 .9 1 1.4 1.7 1l9.6-5.8c.7-.4.7-1.5 0-1.9L1.7.2C1 -.2 0 .3 0 1.2z" />
                   </svg>
                 </div>
@@ -80,9 +81,9 @@ export const TeamMomentsRail = () => {
                 }}
               >
                 <div className="sf-display text-white text-[13.5px] font-bold leading-tight tracking-[-0.01em] mb-0.5">
-                  {r.title}
+                  {localized(r, 'title')}
                 </div>
-                <div className="sf text-white/65 text-[10.5px] leading-snug truncate">{r.sub}</div>
+                <div className="sf text-white/65 text-[10.5px] leading-snug truncate">{localized(r, 'sub')}</div>
               </div>
             </button>
           );

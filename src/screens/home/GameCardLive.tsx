@@ -26,7 +26,7 @@ export const GameCardLive = ({ game, onWatch }: GameCardLiveProps) => {
   return (
     <button
       onClick={() => onWatch?.(game.id)}
-      className="relative w-full text-left squircle-md overflow-hidden lg-aura lg-shine lg-live-ember"
+      className="relative w-full text-start squircle-md overflow-hidden lg-aura lg-shine lg-live-ember"
       style={{
         background:
           'linear-gradient(180deg, var(--card-base-soft-top) 0%, var(--card-base-soft-bot) 100%)',

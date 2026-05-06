@@ -1,5 +1,10 @@
 @import 'tailwindcss';
 
+/* Noto Sans Hebrew — loaded for RTL language support. The .sf utility's
+   font stack falls through to it for Hebrew glyphs that SF Pro doesn't
+   cover well outside Apple platforms. */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;600;700;800&display=swap');
+
 /* Tell Tailwind v4 explicitly where to find utility classes — auto-detect can
    miss files when Storybook's vite bundles them differently. */
 @source "../src/**/*.{ts,tsx,js,jsx}";
@@ -13,14 +18,28 @@
 
 /* ----- Typography ----- */
 .sf {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', 'Noto Sans Hebrew', system-ui, sans-serif;
   font-feature-settings: 'ss01', 'cv11';
   -webkit-font-smoothing: antialiased;
   letter-spacing: -0.01em;
 }
 .sf-display {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Noto Sans Hebrew', sans-serif;
   letter-spacing: -0.022em;
+}
+/* Hebrew renders tighter at small letter-spacing — relax it when dir=rtl
+   so the type doesn't crunch. */
+[dir='rtl'] .sf,
+[dir='rtl'] .sf-display {
+  letter-spacing: 0;
+}
+
+/* Mirror directional icons (chevrons, arrows) under RTL.
+   Apply this class to icons whose visual meaning changes with reading
+   direction. Do NOT apply to play triangles, share arrows, or icons
+   with absolute meaning (sun, moon, etc.). */
+[dir='rtl'] .icon-flip-rtl {
+  transform: scaleX(-1);
 }
 .font-mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace; }
 

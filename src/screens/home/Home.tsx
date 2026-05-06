@@ -8,6 +8,8 @@ import { StorytellingDropsRail } from './StorytellingDropsRail';
 import { TeamMomentsRail } from './TeamMomentsRail';
 import { HighlightViewer } from './HighlightViewer';
 import { PackReveal } from './PackReveal';
+import { StorytellingDropViewer } from './StorytellingDropViewer';
+import { SideMenu } from '@/screens/menu/SideMenu';
 import { defaultPlayerState, SEED_MOMENTS, type FollowState } from './_data';
 
 /* Verbatim composition mirroring halo-v3.2-glass.html HomePlayer (line 7491):
@@ -38,6 +40,8 @@ export const Home = ({
   const [viewer, setViewer] = useState<{ ids: string[]; index: number } | null>(null);
   const [reveal, setReveal] = useState<string | null>(null);
   const [revealed, setRevealed] = useState<Set<string>>(new Set());
+  const [storyDrop, setStoryDrop] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const playerMomentIds = SEED_MOMENTS.filter((m) => m.personId === 'self').slice(0, 6);
 
@@ -77,12 +81,12 @@ export const Home = ({
           }}
         />
         <div className="relative z-10">
-          <HomeHeader greeting="Game day" />
+          <HomeHeader onMenuOpen={() => setMenuOpen(true)} />
           <HighlightCircles s={s} />
           <GameCard state={gameState} onReveal={(gid) => setReveal(gid)} />
           <DropsSection onPick={handlePick} />
           <FollowingStrip s={s} />
-          <StorytellingDropsRail audience={s.persona} />
+          <StorytellingDropsRail audience={s.persona} onOpen={setStoryDrop} />
           <TeamMomentsRail />
         </div>
       </div>
@@ -107,6 +111,16 @@ export const Home = ({
           onOpenMoment={(ids, index) => setViewer({ ids, index })}
         />
       )}
+
+      {storyDrop && (
+        <StorytellingDropViewer
+          dropId={storyDrop}
+          audience={s.persona}
+          onClose={() => setStoryDrop(null)}
+        />
+      )}
+
+      {menuOpen && <SideMenu onClose={() => setMenuOpen(false)} />}
     </div>
   );
 };

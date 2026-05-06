@@ -233,7 +233,7 @@ export const GlassSelect = ({
           autoFocus={autoFocus}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="auth-input sf text-[15px] flex-1 appearance-none bg-transparent pr-6"
+          className="auth-input sf text-[15px] flex-1 appearance-none bg-transparent pe-6"
           style={{ color: value ? 'var(--text-primary)' : 'var(--text-faint)' }}
         >
           <option value="" disabled style={{ color: 'CanvasText' }}>
@@ -250,7 +250,7 @@ export const GlassSelect = ({
           height={7}
           viewBox="0 0 11 7"
           fill="none"
-          className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+          className="absolute end-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
           style={{ color: 'var(--text-tertiary)' }}
         >
           <path

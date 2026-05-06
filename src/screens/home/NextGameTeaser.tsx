@@ -1,4 +1,4 @@
-import { SEED_GAMES, fmt } from './_data';
+import { SEED_GAMES, fmt, useT, useLocalized } from './_data';
 
 interface Insight {
   id?: string;
@@ -13,22 +13,26 @@ interface Insight {
    The "no-game-today" / resting hero card on Home — editorial Insight on top
    + connected Next-Game panel below. */
 export const NextGameTeaser = ({
-  insight = {
-    date: 'APR 3',
-    title: 'Crash on the boards',
-    body: 'You owned the offensive glass last night — 4 second-chance points in 6 minutes.',
-    statValue: '+4',
-    statLabel: '2ND-CH PTS',
-  },
+  insight,
 }: {
   insight?: Insight;
 }) => {
-  const statValue = insight.statValue || '+4';
-  const statLabel = insight.statLabel || '2ND-CH PTS';
+  const t = useT();
+  const localized = useLocalized();
+  /* Default insight pulled from i18n so the body translates with the language. */
+  const resolvedInsight: Insight = insight ?? {
+    date: 'APR 3',
+    title: t('home.dailyInsightTitle') || 'Crash on the boards',
+    body: t('home.dailyInsightBody') || 'You owned the offensive glass last night — 4 second-chance points in 6 minutes.',
+    statValue: '+4',
+    statLabel: '2ND-CH PTS',
+  };
+  const statValue = resolvedInsight.statValue || '+4';
+  const statLabel = resolvedInsight.statLabel || '2ND-CH PTS';
   const lastGame = SEED_GAMES.find((g) => g.status === 'just-ended') || null;
   const nextGame = SEED_GAMES.find((g) => g.status === 'upcoming') || null;
-  const lastOpp = lastGame ? lastGame.away.split(' ')[0] : 'Northside';
-  const nextLabel = nextGame ? `${nextGame.home} vs ${nextGame.away}` : 'Varsity vs Lincoln';
+  const lastOpp = lastGame ? localized(lastGame, 'away').split(' ')[0] : 'Northside';
+  const nextLabel = nextGame ? `${localized(nextGame, 'home')} ${t('common.vs')} ${localized(nextGame, 'away')}` : 'Varsity vs Lincoln';
 
   return (
     <div className="px-4 mt-3 mb-4">
@@ -51,24 +55,24 @@ export const NextGameTeaser = ({
               style={{ boxShadow: '0 0 12px rgba(0,214,254,0.95), 0 0 4px rgba(0,214,254,0.65)' }}
             />
             <span className="sf text-[10.5px] tracking-[0.18em] uppercase font-bold" style={{ color: 'var(--brand-cyan-text)' }}>
-              DAILY INSIGHT · {insight.date}
+              {t('home.dailyInsight')} · {resolvedInsight.date}
             </span>
           </div>
           <button className="sf text-[10px] tracking-[0.10em] uppercase font-semibold" style={{ color: 'var(--text-tertiary)' }}>
-            vs {lastOpp.toUpperCase()} ›
+            {t('common.vs')} {lastOpp.toUpperCase()} <span className="icon-flip-rtl">›</span>
           </button>
         </div>
 
-        <button className="relative z-10 w-full text-left px-4 pb-4 flex gap-3 items-start">
+        <button className="relative z-10 w-full text-start px-4 pb-4 flex gap-3 items-start">
           <div className="flex-1 min-w-0">
             <div
               className="sf-display text-[21px] font-bold leading-[1.05] tracking-[-0.02em] mb-1.5"
               style={{ color: 'var(--text-primary)' }}
             >
-              “{insight.title}”
+              “{resolvedInsight.title}”
             </div>
             <div className="sf text-[12.5px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-              {insight.body}
+              {resolvedInsight.body}
             </div>
           </div>
           <div
@@ -95,7 +99,7 @@ export const NextGameTeaser = ({
         </button>
 
         <button
-          className="relative z-10 mx-4 mb-3 px-3 py-2 squircle-sm flex items-center justify-between text-left lg-aura"
+          className="relative z-10 mx-4 mb-3 px-3 py-2 squircle-sm flex items-center justify-between text-start lg-aura"
           style={{
             background: 'var(--brand-cyan-soft)',
             border: '1px solid var(--brand-cyan-border)',
@@ -103,14 +107,14 @@ export const NextGameTeaser = ({
           }}
         >
           <span className="sf text-[11.5px] font-semibold" style={{ color: 'var(--brand-cyan-text)' }}>
-            More insights from this week
+            {t('home.moreInsights')}
           </span>
-          <span className="text-[14px] font-bold" style={{ color: 'var(--brand-cyan-text)' }}>›</span>
+          <span className="text-[14px] font-bold icon-flip-rtl" style={{ color: 'var(--brand-cyan-text)' }}>›</span>
         </button>
 
         {nextGame ? (
           <button
-            className="relative z-10 w-full text-left p-3.5 flex items-center justify-between"
+            className="relative z-10 w-full text-start p-3.5 flex items-center justify-between"
             style={{
               borderTop: '1px solid var(--glass-card-border)',
               background:
@@ -121,7 +125,7 @@ export const NextGameTeaser = ({
             <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <span className="sf text-[9.5px] tracking-[0.18em] uppercase font-bold" style={{ color: 'var(--text-tertiary)' }}>
-                  NEXT GAME
+                  {t('home.nextGame')}
                 </span>
                 <span
                   className="squircle-sm sf text-[8.5px] tracking-[0.14em] uppercase font-bold px-1.5 py-0.5 leading-none"
@@ -138,12 +142,12 @@ export const NextGameTeaser = ({
                 {nextLabel}
               </div>
             </div>
-            <div className="text-right shrink-0 ml-3">
+            <div className="text-end shrink-0 ms-3">
               <div className="sf-display text-[18px] font-bold tabular-nums leading-none" style={{ color: 'var(--text-primary)' }}>
                 {fmt.countdown(nextGame.kickoffInSec)}
               </div>
               <div className="sf text-[9.5px] tracking-[0.14em] uppercase block mt-1" style={{ color: 'var(--text-tertiary)' }}>
-                {nextGame.venue || 'Eastside Gym'}
+                {localized(nextGame, 'venue') || 'Eastside Gym'}
               </div>
             </div>
           </button>
@@ -161,7 +165,7 @@ export const NextGameTeaser = ({
               </div>
             </div>
             <div
-              className="shrink-0 ml-3 sf text-[10px] tracking-[0.14em] uppercase font-semibold"
+              className="shrink-0 ms-3 sf text-[10px] tracking-[0.14em] uppercase font-semibold"
               style={{ color: 'var(--text-faint)' }}
             >
               Stay sharp

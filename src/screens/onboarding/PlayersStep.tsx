@@ -87,7 +87,7 @@ export const PlayersStep = ({
                 </div>
                 <button
                   onClick={() => togglePlayer(p.id)}
-                  className="flex-1 min-w-0 text-left"
+                  className="flex-1 min-w-0 text-start"
                 >
                   <div className="sf-display text-[14.5px] font-bold text-white truncate">
                     {p.name}

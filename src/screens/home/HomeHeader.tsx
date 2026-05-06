@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useT } from './_data';
 
 /* Verbatim port: halo-v3.2-glass.html line 7756.
    ThemeToggle and NotificationsSheet are intentionally inlined as light
@@ -26,7 +27,19 @@ const ThemeToggleInline = () => {
   );
 };
 
-export const HomeHeader = ({ greeting = 'Game day' }: { greeting?: string }) => (
+export const HomeHeader = ({
+  greeting,
+  onMenuOpen,
+}: {
+  /** Override the default greeting. If omitted, falls back to t('home.gameDay'). */
+  greeting?: string;
+  /** Fired when the hamburger is tapped — Home wires this to open
+      the SideMenu drawer. */
+  onMenuOpen?: () => void;
+}) => {
+  const t = useT();
+  const label = greeting ?? t('home.gameDay');
+  return (
   <div
     className="relative z-20 px-5 pt-14 pb-3 sticky top-0 flex items-center justify-between"
     style={{
@@ -39,7 +52,7 @@ export const HomeHeader = ({ greeting = 'Game day' }: { greeting?: string }) => 
     <div className="flex items-baseline gap-2">
       <span className="sf-display font-bold text-[22px] text-white leading-none">HALO</span>
       <span className="sf text-[10px] tracking-[0.18em] uppercase text-halo-cyan font-bold">
-        {greeting}
+        {label}
       </span>
     </div>
     <div className="flex items-center gap-2">
@@ -53,12 +66,13 @@ export const HomeHeader = ({ greeting = 'Game day' }: { greeting?: string }) => 
           <path d="M5.5 10.3a1.5 1.5 0 0 0 3 0" />
         </svg>
         <span
-          className="absolute -top-0.5 -right-0.5 min-w-[15px] h-[15px] live-red rounded-full sf text-[8.5px] font-bold flex items-center justify-center px-1 leading-none border border-black"
+          className="absolute -top-0.5 -end-0.5 min-w-[15px] h-[15px] live-red rounded-full sf text-[8.5px] font-bold flex items-center justify-center px-1 leading-none border border-black"
         >
           3
         </span>
       </button>
       <button
+        onClick={onMenuOpen}
         className="w-9 h-9 lg-glass squircle-sm flex items-center justify-center text-white/85"
         aria-label="Menu"
       >
@@ -70,4 +84,5 @@ export const HomeHeader = ({ greeting = 'Game day' }: { greeting?: string }) => 
       </button>
     </div>
   </div>
-);
+  );
+};

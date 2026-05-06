@@ -263,7 +263,7 @@ const TeamCard = ({
 }) => (
   <button
     onClick={onClick}
-    className="w-full text-left squircle-md p-3.5 flex items-center gap-3.5 lg-aura relative overflow-hidden"
+    className="w-full text-start squircle-md p-3.5 flex items-center gap-3.5 lg-aura relative overflow-hidden"
     style={
       active
         ? {

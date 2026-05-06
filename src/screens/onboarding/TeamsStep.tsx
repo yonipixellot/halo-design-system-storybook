@@ -74,7 +74,7 @@ export const TeamsStep = ({
               <button
                 key={t.id}
                 onClick={() => toggleAny(t.id)}
-                className="w-full text-left squircle-md p-3.5 flex items-center gap-3.5 lg-aura"
+                className="w-full text-start squircle-md p-3.5 flex items-center gap-3.5 lg-aura"
                 style={
                   active
                     ? {

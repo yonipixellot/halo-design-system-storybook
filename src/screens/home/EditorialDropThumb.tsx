@@ -1,4 +1,4 @@
-import { dropEditorialCopy, ROSTER_LITE, SEED_GAMES, type Moment } from './_data';
+import { useDropEditorialCopy, ROSTER_LITE, SEED_GAMES, type Moment } from './_data';
 
 /* Verbatim port: halo-v3.2-glass.html line 9431. */
 export const EditorialDropThumb = ({
@@ -13,13 +13,14 @@ export const EditorialDropThumb = ({
   const personId = moment?.personId === 'self' ? 'r1' : moment?.personId;
   const player = personId ? ROSTER_LITE.find((p) => p.id === personId) : null;
   const game = moment?.gameId ? SEED_GAMES.find((g) => g.id === moment.gameId) : null;
-  const { title, body } = dropEditorialCopy(moment, game, player);
+  const editorialCopy = useDropEditorialCopy();
+  const { title, body } = editorialCopy(moment, game, player);
   const durationStr = moment?.duration != null ? `0:${String(moment.duration).padStart(2, '0')}` : null;
 
   return (
     <button
       onClick={onClick}
-      className="relative shrink-0 overflow-hidden text-left squircle-md lg-aura lg-shine"
+      className="relative shrink-0 overflow-hidden text-start squircle-md lg-aura lg-shine"
       style={{
         width: w,
         height: h,
@@ -42,7 +43,7 @@ export const EditorialDropThumb = ({
       {/* Diagonal grain */}
       <div className="absolute inset-0 hatch opacity-40" />
       {durationStr && (
-        <div className="absolute top-2.5 left-2.5 lg-glass-strong squircle-sm px-2 py-0.5 z-10">
+        <div className="absolute top-2.5 start-2.5 lg-glass-strong squircle-sm px-2 py-0.5 z-10">
           <span className="sf text-[9.5px] font-semibold leading-none text-white tabular-nums tracking-tight">
             {durationStr}
           </span>
@@ -56,7 +57,7 @@ export const EditorialDropThumb = ({
             height={16}
             viewBox="0 0 12 14"
             fill="currentColor"
-            className="text-white ml-0.5"
+            className="text-white ms-0.5"
             aria-hidden="true"
           >
             <path d="M0 1.2v11.6c0 .9 1 1.4 1.7 1l9.6-5.8c.7-.4.7-1.5 0-1.9L1.7.2C1 -.2 0 .3 0 1.2z" />

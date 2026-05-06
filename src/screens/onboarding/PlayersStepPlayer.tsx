@@ -331,7 +331,7 @@ const FollowRow = ({
   <button
     key={prefix + id}
     onClick={onToggle}
-    className="w-full text-left squircle-md p-3 flex items-center gap-3 lg-aura relative overflow-hidden"
+    className="w-full text-start squircle-md p-3 flex items-center gap-3 lg-aura relative overflow-hidden"
     style={
       active
         ? {
