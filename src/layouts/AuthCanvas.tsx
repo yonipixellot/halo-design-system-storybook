@@ -73,9 +73,15 @@ export const AuthCanvas = ({ children }: AuthCanvasProps) => (
     {/* Form panel — single render of children. Phone: transparent so
         atmosphere shows through. Desktop: clean canvas-bg of .glass-app.
         Internal scroll at lg+ so long forms (e.g. SignUp's multi-step)
-        scroll inside the form column instead of letting the page
-        overflow + push the brand panel taller than the viewport. */}
-    <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:justify-center lg:px-10 xl:px-16 lg:py-16 lg:max-h-screen lg:overflow-y-auto">
+        scroll inside the form column instead of letting the page push
+        the brand panel taller than the viewport.
+
+        Note: NO `justify-center` here — when a form is taller than the
+        viewport, justify-center pushes the top of the form (Sign In /
+        Sign Up tabs) above the scroll area's top, making it
+        unreachable. Anchor to top + `py-16` for breathing room and
+        let `overflow-y-auto` handle long forms. */}
+    <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:px-10 xl:px-16 lg:py-16 lg:max-h-screen lg:overflow-y-auto">
       <div className="w-full lg:max-w-[440px] lg:mx-auto">{children}</div>
     </main>
   </div>
