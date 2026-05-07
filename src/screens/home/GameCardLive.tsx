@@ -127,11 +127,12 @@ export const GameCardLive = ({ game, onWatch }: GameCardLiveProps) => {
         </div>
       </div>
 
-      {/* Footer row — compact Watch-live CTA pinned to trailing edge.
-          ~50% on phone (room for icon + label), ~33% at lg+ for a
-          tighter visual landing under the score column. ms-auto pins
-          to inline-end so it RTL-flips. stopPropagation so the inner
-          button doesn't double-fire with the outer card. */}
+      {/* Footer row — compact Watch-live CTA pinned to inline-start
+          (under the team-name column). ~50% on phone (room for icon +
+          label), ~33% at lg+ (max 280px). RTL-safe because the parent
+          flex row uses flex-start by default; in RTL the button
+          auto-flips to the start edge (right side). stopPropagation
+          so the inner button doesn't double-fire with the outer card. */}
       <div
         className="relative px-4 pt-3 pb-4 lg:px-5 lg:pb-5 flex"
         style={{ zIndex: 2 }}
@@ -142,7 +143,7 @@ export const GameCardLive = ({ game, onWatch }: GameCardLiveProps) => {
             e.stopPropagation();
             fire();
           }}
-          className="live-red ms-auto w-1/2 lg:w-1/3 lg:max-w-[280px] squircle-md py-2.5 flex items-center justify-center gap-2 sf text-[13.5px] font-semibold whitespace-nowrap"
+          className="live-red w-1/2 lg:w-1/3 lg:max-w-[280px] squircle-md py-2.5 flex items-center justify-center gap-2 sf text-[13.5px] font-semibold whitespace-nowrap"
         >
           <PlayIcon />
           {t('home.watchLive')}
