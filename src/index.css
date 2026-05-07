@@ -560,6 +560,10 @@ button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
   --card-base-warm-bot:   rgba(250,240,222,0.65);
   --ink-surface:      rgba(26,26,31,0.06);
   --ink-surface-text: #1a1a1f;
+
+  /* Auth segmented toggle — matte-black active state in light mode */
+  --auth-tab-active-bg:   #0e1015;
+  --auth-tab-active-text: #ffffff;
 }
 
 [data-theme="dark"] {
@@ -624,6 +628,10 @@ button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
   --card-base-warm-bot:   rgba(10,8,6,0.55);
   --ink-surface:      rgba(255,255,255,0.10);
   --ink-surface-text: #fff;
+
+  /* Auth segmented toggle — bright-white active state in dark mode */
+  --auth-tab-active-bg:   #ffffff;
+  --auth-tab-active-text: #0a0c12;
 }
 
 /* ============================================================================

@@ -105,15 +105,19 @@ export const AuthModeToggle = ({
         onClick={() => onChange(t.key)}
         className={cls(
           'flex-1 py-2.5 sf text-[12.5px] font-semibold tracking-tight squircle-sm transition-all',
-          mode === t.key ? 'text-halo-cyan' : 'text-white/55',
+          mode === t.key ? '' : 'text-white/55',
         )}
         style={
           mode === t.key
             ? {
-                background: 'var(--glass-strong-bg)',
+                /* Strong active state — matte black + white text in light
+                   mode, white + black text in dark mode. Tokens flip via
+                   data-theme. */
+                background: 'var(--auth-tab-active-bg)',
+                color: 'var(--auth-tab-active-text)',
+                border: '1px solid var(--auth-tab-active-bg)',
                 boxShadow:
-                  'inset 0 1px 0 var(--glass-strong-inset-top), 0 2px 8px -2px rgba(0,0,0,0.08)',
-                border: '1px solid var(--glass-strong-border)',
+                  'inset 0 1px 0 rgba(255,255,255,0.10), 0 2px 8px -2px rgba(0,0,0,0.18)',
               }
             : { border: '1px solid transparent' }
         }
