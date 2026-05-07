@@ -80,7 +80,7 @@ export const AuthCanvas = ({ children }: AuthCanvasProps) => (
         from the top — so SignIn (short) feels balanced rather than
         crammed at top, and SignUp (tall) starts at the same point and
         scrolls inside the column when content exceeds viewport. */}
-    <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:px-10 xl:px-16 lg:pt-[14vh] lg:pb-16 lg:max-h-screen lg:overflow-y-auto">
+    <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:px-10 xl:px-16 lg:pt-[20vh] lg:pb-16 lg:max-h-screen lg:overflow-y-auto">
       <div className="w-full lg:max-w-[440px] lg:mx-auto">{children}</div>
     </main>
   </div>
