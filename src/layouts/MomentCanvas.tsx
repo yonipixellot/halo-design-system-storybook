@@ -65,14 +65,19 @@ export const MomentCanvas = ({
       <div
         className={[
           'w-full',
-          /* Desktop: glass card */
-          'lg:lg-glass-card',
-          'lg:squircle-lg',
+          /* Desktop: centered content column on atmosphere — no glass
+             card chrome. Earlier iteration wrapped the moment content
+             in `lg-glass-card` to give it a contained feel, but in
+             light theme the white-on-cream card is invisible while its
+             border leaks through as ghost vertical seams (the same
+             family of bug as the OnboardStepper white frame and
+             OnboardDock hairline). The moment screens already self-
+             anchor via their own hero element (cyan-halo coach disc,
+             persona avatars, bell), so they don't need a containing
+             card — the atmosphere itself is the canvas. */
           'lg:max-w-[560px]',
           'lg:py-12',
           'lg:px-10',
-          'lg:max-h-[calc(100vh-80px)]',
-          'lg:overflow-y-auto',
         ].join(' ')}
       >
         {children}

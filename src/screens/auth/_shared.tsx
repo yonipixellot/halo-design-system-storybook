@@ -7,10 +7,12 @@ import { cls } from '@/lib/cls';
    ============================================================================ */
 
 export const AuthAtmosphere = ({ children }: { children: ReactNode }) => (
-  <div
-    className="anim-fade pb-8 text-white sf relative"
-    style={{ minHeight: '100%' }}
-  >
+  /* `min-h-screen` (not `100%`) so the atmosphere fills the viewport on
+     desktop too — `100%` collapses to content-height when the parent
+     is unconstrained (e.g. Storybook preview iframe), exposing a hard
+     seam below the gradient. Phone is unaffected because the .glass-app
+     parent is already 100vh there. */
+  <div className="anim-fade pb-8 text-white sf relative min-h-screen">
     <div className="lg-atmosphere" />
     <div
       className="absolute inset-0 z-[1] pointer-events-none"

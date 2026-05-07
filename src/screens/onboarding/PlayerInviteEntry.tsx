@@ -58,18 +58,12 @@ export const PlayerInviteEntry = ({
   return (
     <MomentCanvas>
       <div className="flex-1 min-h-0 overflow-y-auto px-6 pt-14 pb-[120px] anim-fade flex flex-col lg:flex-none lg:min-h-0 lg:overflow-visible lg:px-0 lg:pt-0 lg:pb-0">
-      {/* HALO wordmark — reuses the home-header treatment */}
-      <div className="flex items-baseline gap-2 mb-10">
-        <span className="sf-display font-bold text-[20px] text-white leading-none">HALO</span>
-        <span
-          className="sf text-[10px] tracking-[0.18em] uppercase font-bold"
-          style={{ color: 'var(--brand-cyan-text)' }}
-        >
-          {t('invite.fromCoach')}
-        </span>
-      </div>
-
-      {/* Hero — coach avatar with cyan halo */}
+      {/* Hero — coach avatar with cyan halo.
+          (Removed top-of-screen "HALO · FROM YOUR COACH" wordmark — the
+          coach avatar + "ADDED BY COACH SARAH" caption already establish
+          the source, and the second wordmark read as redundant noise on
+          desktop. Phone treatment is the same since the wordmark
+          appeared on both viewports.) */}
       <div className="flex-1 flex flex-col items-center justify-center text-center">
         <div
           className="relative mb-6"
@@ -152,10 +146,14 @@ export const PlayerInviteEntry = ({
           {t('invite.welcomeTitle')}
         </h1>
 
-        {/* Team chip — shows what team they're joining */}
+        {/* Team chip — shows what team they're joining.
+            Sized 2× the original chip so the team identity reads as a
+            real anchor next to the coach hero, not a passing label.
+            Logo: 28→56, padding: 12/8→24/16, gap: 10→20,
+            team-name type: 14→22, org type: 11→14. */}
         {team && (
           <div
-            className="inline-flex items-center gap-2.5 squircle-md px-3 py-2 mb-5"
+            className="inline-flex items-center gap-5 squircle-md px-6 py-4 mb-5"
             style={{
               background: 'var(--glass-card-bg)',
               backdropFilter: 'blur(36px) saturate(180%)',
@@ -168,24 +166,25 @@ export const PlayerInviteEntry = ({
                 src={teamLogoUrl}
                 alt=""
                 className="rounded-full"
-                style={{ width: 28, height: 28, display: 'block', objectFit: 'cover' }}
+                style={{ width: 56, height: 56, display: 'block', objectFit: 'cover' }}
               />
             ) : (
               <div
-                className="w-7 h-7 squircle-sm lg-glass-strong flex items-center justify-center"
+                className="squircle-sm lg-glass-strong flex items-center justify-center"
+                style={{ width: 56, height: 56 }}
               >
-                <span className="sf-display text-[10px] font-bold text-white">
+                <span className="sf-display text-[20px] font-bold text-white">
                   {team.initial}
                 </span>
               </div>
             )}
             <div className="text-start min-w-0">
-              <div className="sf-display text-[14px] font-bold text-white leading-tight truncate">
+              <div className="sf-display text-[22px] font-bold text-white leading-tight truncate">
                 {teamName}
               </div>
               {teamOrg && (
                 <div
-                  className="sf text-[11px] truncate leading-tight mt-0.5"
+                  className="sf text-[14px] truncate leading-tight mt-1"
                   style={{ color: 'var(--text-tertiary)' }}
                 >
                   {teamOrg}

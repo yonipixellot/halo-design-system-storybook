@@ -532,9 +532,15 @@ button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
   --btn-disabled-spec: rgba(255,255,255,0.12);
   --btn-disabled-bg:   rgba(10,10,15,0.32);
   --btn-disabled-text: rgba(255,255,255,0.92);
-  --atm-tint-1: rgba(0,214,254,0.16);
-  --atm-tint-2: rgba(132,88,255,0.11);
-  --atm-tint-3: rgba(255,150,90,0.10);
+  /* Light-theme atmosphere tints — kept low because the pale cream base
+     amplifies any colored alpha into near-white hotspots. Earlier values
+     (0.16 / 0.11 / 0.10) caused the cyan ellipse at 15% 10% to read as
+     an animated vertical white band drifting across the left edge of
+     1920+ viewports during lg-drift. Halved to ~50% so the hotspots
+     stay subtle on cream while preserving the brand drift feel. */
+  --atm-tint-1: rgba(0,214,254,0.08);
+  --atm-tint-2: rgba(132,88,255,0.06);
+  --atm-tint-3: rgba(255,150,90,0.05);
   --atm-base-start: #FBF8F2;
   --atm-base-mid:   #F5F0E8;
   --atm-base-end:   #EFE8DC;
@@ -685,6 +691,16 @@ button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
   50%      { transform: translate3d(-3%, 1.5%, 0) scale(1.06); }
 }
 
+/* Light theme — kill the drift animation. The cream atmosphere base
+   amplifies any moving cyan/purple tint into a visible "white band
+   sweeping the left side" because the tints sit at low alpha on a
+   bright base. Dark theme keeps the drift (where the dark base hides
+   the movement and the drift adds polish). Tints stay in place; only
+   the animation is suppressed. */
+.glass-app[data-theme='light'] .lg-atmosphere {
+  animation: none;
+}
+
 /* CTA-width rule — on desktop, primary buttons must NOT stretch full
    container width. Phone keeps its full-width treatment; lg+ caps the
    button at 360px and centers it. Apply alongside lg-btn-primary on
@@ -697,6 +713,32 @@ button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
   .cta-constrained-form {
     max-width: 400px;
     margin-inline: auto;
+  }
+
+  /* OnboardStepper — desktop kills the white/cream "frame" so the bar
+     blends into the atmosphere. Both the gradient fill and the hairline
+     track strip drop out; the cyan progress bar + STEP label remain. */
+  .onboard-stepper-frame {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .onboard-stepper-track {
+    background: transparent !important;
+  }
+
+  /* OnboardDock — same logic as the stepper at the top. Mobile dock
+     chrome (cream fade + blur + 1px hairline) reads as "section
+     separator" on phone where the dock is pinned to the viewport
+     bottom over scrolling content. On desktop there's no pinning and
+     often no content above to separate from, so the chrome reads as
+     decoration. Kill the fill, blur, and hairline at lg+ — the button
+     keeps its own lg-aura glow and floats free on the atmosphere. */
+  .onboard-dock-frame {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-top: none !important;
   }
 }
 

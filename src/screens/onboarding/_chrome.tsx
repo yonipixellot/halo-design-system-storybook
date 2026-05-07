@@ -14,7 +14,7 @@ export const OnboardStepper = ({
   label?: string;
 }) => (
   <div
-    className="shrink-0 relative z-20 px-5 pt-12 pb-3"
+    className="shrink-0 relative z-20 px-5 pt-12 pb-3 onboard-stepper-frame"
     style={{
       background:
         'linear-gradient(180deg, var(--header-fade-start) 0%, var(--header-fade-mid) 80%, transparent 100%)',
@@ -49,7 +49,7 @@ export const OnboardStepper = ({
       </span>
       <div className="w-9" />
     </div>
-    <div className="h-[3px] rounded-full overflow-hidden" style={{ background: 'var(--hairline-strong)' }}>
+    <div className="h-[3px] rounded-full overflow-hidden onboard-stepper-track" style={{ background: 'var(--hairline-strong)' }}>
       <div
         className="h-full rounded-full bg-halo-cyan"
         style={{
@@ -63,8 +63,19 @@ export const OnboardStepper = ({
 );
 
 export const OnboardDock = ({ children }: { children: ReactNode }) => (
+  /* Outer chrome (gradient fade + blur + hairline) intentionally spans
+     the full content frame so the dock reads as the bottom edge of the
+     canvas — same as a mobile dock spans screen-edge to screen-edge.
+
+     Inner column caps the *button row* at 440px on desktop and centers
+     it. This keeps phone byte-identical (no cap → buttons fill
+     edge-to-edge with px-5 padding, the existing mobile dock pattern)
+     while preventing the desktop "1100px-wide stripe" CTA shape that
+     reads as a footer banner instead of a button. 440 matches the
+     AuthCanvas form-column width so the visual family stays consistent
+     across auth and onboarding. */
   <div
-    className="shrink-0 px-5 pb-6 pt-4"
+    className="shrink-0 px-5 pb-6 pt-4 onboard-dock-frame"
     style={{
       position: 'relative',
       flexShrink: 0,
@@ -77,6 +88,6 @@ export const OnboardDock = ({ children }: { children: ReactNode }) => (
       borderTop: '1px solid var(--hairline)',
     }}
   >
-    {children}
+    <div className="lg:max-w-[440px] lg:mx-auto">{children}</div>
   </div>
 );

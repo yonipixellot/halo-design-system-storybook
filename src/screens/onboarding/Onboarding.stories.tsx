@@ -10,8 +10,13 @@ import { ClaimedStep } from './ClaimedStep';
 const wrap = (children: React.ReactNode) => (
   /* No hardcoded `background: #000` here — the inherited .glass-app from
      preview.tsx supplies var(--canvas-bg) which respects the global theme
-     toggle. Hardcoding black would force every story dark even in Light. */
-  <div className="absolute inset-0 anim-fade onboard-glass">
+     toggle. Hardcoding black would force every story dark even in Light.
+
+     Desktop layout MUST mirror Onboarding.tsx so standalone stories obey
+     the same 1200-cap as the orchestrator. Phone keeps the absolute-fill
+     treatment; lg+ flips to `relative + max-w-[1200px] + mx-auto` so the
+     persona/teams/players content frame doesn't stretch edge-to-edge. */
+  <div className="absolute inset-0 anim-fade onboard-glass lg:relative lg:inset-auto lg:min-h-screen">
     <div className="lg-atmosphere" />
     <div
       className="absolute inset-0 z-[1] pointer-events-none"
@@ -20,7 +25,9 @@ const wrap = (children: React.ReactNode) => (
           'linear-gradient(180deg, var(--vignette-corner) 0%, transparent 30%, transparent 70%, var(--vignette-corner-soft) 100%)',
       }}
     />
-    <div className="absolute inset-0 z-10 flex flex-col">{children}</div>
+    <div className="absolute inset-0 z-10 flex flex-col lg:relative lg:inset-auto lg:min-h-screen lg:max-w-[1200px] lg:mx-auto">
+      {children}
+    </div>
   </div>
 );
 

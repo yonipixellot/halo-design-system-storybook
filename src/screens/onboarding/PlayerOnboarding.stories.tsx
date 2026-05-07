@@ -13,7 +13,9 @@ import { PlayerInviteEntry } from './PlayerInviteEntry';
    coach hero renders as an initials letterform. */
 
 const wrap = (children: React.ReactNode) => (
-  <div className="absolute inset-0 anim-fade onboard-glass">
+  /* Desktop: relative + min-h-screen + 1200 cap so the standalone story
+     doesn't stretch edge-to-edge — mirrors the orchestrator's layout. */
+  <div className="absolute inset-0 anim-fade onboard-glass lg:relative lg:inset-auto lg:min-h-screen">
     <div className="lg-atmosphere" />
     <div
       className="absolute inset-0 z-[1] pointer-events-none"
@@ -22,7 +24,9 @@ const wrap = (children: React.ReactNode) => (
           'linear-gradient(180deg, var(--vignette-corner) 0%, transparent 30%, transparent 70%, var(--vignette-corner-soft) 100%)',
       }}
     />
-    <div className="absolute inset-0 z-10 flex flex-col">{children}</div>
+    <div className="absolute inset-0 z-10 flex flex-col lg:relative lg:inset-auto lg:min-h-screen lg:max-w-[1200px] lg:mx-auto">
+      {children}
+    </div>
   </div>
 );
 
