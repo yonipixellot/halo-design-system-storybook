@@ -25,11 +25,22 @@ export const WithUnrevealedDrops: Story = {
   args: { gameState: 'ready', unrevealedGameIds: ['gE'] },
 };
 
+/* HomeHeader is phone-only chrome — on desktop, HomeShell renders an
+   AppHeader instead. This story constrains to a 393-wide column at lg+
+   so reviewers can preview the phone chrome without it stretching. */
 export const HeaderOnly: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Phone-only chrome. On desktop, HomeShell renders AppHeader instead — see Layouts & breakpoints.',
+      },
+    },
+  },
   render: () => (
     <div className="text-white sf relative" style={{ minHeight: '100%' }}>
       <div className="lg-atmosphere" />
-      <div className="relative z-10">
+      <div className="relative z-10 lg:max-w-[393px] lg:mx-auto">
         <HomeHeader greeting="Game day" />
       </div>
     </div>

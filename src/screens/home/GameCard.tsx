@@ -47,9 +47,24 @@ export const GameCard = ({
     return <NextGameTeaser />;
   }
 
+  /* Per-state desktop max-width — Live gets a bit more presence
+     (highest-energy state in the app), Error stays small and quiet,
+     everything else lands on a sensible single-card cap. Phone
+     unchanged everywhere. */
+  const maxWClass = (() => {
+    switch (state) {
+      case 'live':
+        return 'lg:max-w-[960px]';
+      case 'error':
+        return 'lg:max-w-[560px]';
+      default:
+        return 'lg:max-w-[840px]';
+    }
+  })();
+
   if (state === 'error') {
     return (
-      <div className="px-4 mt-3 mb-4 lg:px-8 xl:px-12 lg:max-w-[840px] lg:mx-auto">
+      <div className={`px-4 mt-3 mb-4 lg:px-8 xl:px-12 lg:mx-auto ${maxWClass}`}>
         <GameCardError onRetry={onRetry} onReport={onReport} />
       </div>
     );
@@ -64,7 +79,7 @@ export const GameCard = ({
   if (!resolved) return <NextGameTeaser />;
 
   return (
-    <div className="px-4 mt-3 mb-4">
+    <div className={`px-4 mt-3 mb-4 lg:px-8 xl:px-12 lg:mx-auto ${maxWClass}`}>
       {state === 'pre' && <GameCardPre game={resolved} />}
       {state === 'live' && <GameCardLive game={resolved} onWatch={onWatch} />}
       {state === 'just-ended' && <GameCardJustEnded game={resolved} />}
