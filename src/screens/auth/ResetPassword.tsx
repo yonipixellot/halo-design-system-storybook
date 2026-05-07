@@ -95,7 +95,7 @@ export const ResetPasswordScreen = ({
   return (
     <AuthCanvas>
       <HaloWordmark />
-      <div className="px-6 lg:px-0 anim-fade">
+      <div className="px-6 pt-14 lg:px-0 lg:pt-6 anim-fade">
         <h1 className="sf-display text-[26px] font-bold text-white leading-tight tracking-[-0.025em] text-center mb-1.5">
           Set a new password
         </h1>
