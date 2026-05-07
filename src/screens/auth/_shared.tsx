@@ -67,7 +67,7 @@ export const ClientLogoMark = () => (
 export const ClientLogoHero = () => (
   <div
     data-theme="dark"
-    className="relative w-full overflow-hidden anim-fade lg-keep-dark flex items-center justify-center"
+    className="lg:hidden relative w-full overflow-hidden anim-fade lg-keep-dark flex items-center justify-center"
     style={{
       height: 320,
       borderBottomLeftRadius: 32,
