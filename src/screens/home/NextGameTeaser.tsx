@@ -59,14 +59,7 @@ export const NextGameTeaser = ({
     backdropFilter: 'blur(36px) saturate(180%)',
     WebkitBackdropFilter: 'blur(36px) saturate(180%)',
   };
-  const nextGameCardStyle: React.CSSProperties = {
-    background: 'var(--glass-card-bg)',
-    border: '1px solid var(--glass-card-border)',
-    backdropFilter: 'blur(36px) saturate(180%)',
-    WebkitBackdropFilter: 'blur(36px) saturate(180%)',
-  };
-
-  /* === Insight content blocks (used by both phone + desktop) === */
+  /* === Insight content blocks === */
   const InsightHeader = (
     <div className="relative z-10 px-4 pt-4 pb-2 flex items-center justify-between">
       <div className="flex items-center gap-2">
@@ -248,34 +241,19 @@ export const NextGameTeaser = ({
 
   return (
     <div className="px-5 mt-3 mb-4 lg:px-8 xl:px-12">
-      {/* Phone: single combined card with internal divider */}
+      {/* One combined card at every viewport — insight on top + next-
+          game footer separated by an internal border-top divider. The
+          earlier desktop split was a response to a sprawling canvas;
+          since HomeShell now constrains the feed to max-w-1200, the
+          combined card sits well at every breakpoint. */}
       <div
-        className="lg:hidden relative squircle-md overflow-hidden lg-teaser-ember"
+        className="relative squircle-md overflow-hidden lg-teaser-ember"
         style={insightCardStyle}
       >
         {InsightHeader}
         {InsightBody}
         {MoreInsightsCTA}
         <div style={{ borderBlockStart: '1px solid var(--glass-card-border)' }}>
-          {NextGameContent}
-        </div>
-      </div>
-
-      {/* Desktop: insight (60%) + next-game (40%) side-by-side, equal
-          height. Each card carries its own background + border. */}
-      <div className="hidden lg:flex lg:gap-4 lg:items-stretch">
-        <div
-          className="flex-[3] relative squircle-md overflow-hidden lg-teaser-ember flex flex-col"
-          style={insightCardStyle}
-        >
-          {InsightHeader}
-          {InsightBody}
-          <div className="mt-auto">{MoreInsightsCTA}</div>
-        </div>
-        <div
-          className="flex-[2] relative squircle-md overflow-hidden flex flex-col justify-center"
-          style={nextGameCardStyle}
-        >
           {NextGameContent}
         </div>
       </div>
