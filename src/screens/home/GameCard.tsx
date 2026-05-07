@@ -54,7 +54,7 @@ export const GameCard = ({
      wrapper, and its start edge auto-aligns with rail headers. */
   if (state === 'error') {
     return (
-      <div className="px-4 mt-3 mb-4 lg:px-8 xl:px-12">
+      <div className="px-5 mt-3 mb-4 lg:px-8 xl:px-12">
         <GameCardError onRetry={onRetry} onReport={onReport} />
       </div>
     );
@@ -69,7 +69,7 @@ export const GameCard = ({
   if (!resolved) return <NextGameTeaser />;
 
   return (
-    <div className="px-4 mt-3 mb-4 lg:px-8 xl:px-12">
+    <div className="px-5 mt-3 mb-4 lg:px-8 xl:px-12">
       {state === 'pre' && <GameCardPre game={resolved} />}
       {state === 'live' && <GameCardLive game={resolved} onWatch={onWatch} />}
       {state === 'just-ended' && <GameCardJustEnded game={resolved} />}
