@@ -73,18 +73,15 @@ export const AuthCanvas = ({ children }: AuthCanvasProps) => (
     {/* Form panel — single render of children. Phone: transparent so
         atmosphere shows through. Desktop: clean canvas-bg of .glass-app.
 
-        Centering trick: `lg:my-auto` on the inner wrapper inside a
-        flex-col parent gives "center if fits, anchor-top if it
-        overflows" behavior. When content height < panel height, the
-        auto margin-block centers the wrapper. When content > panel,
-        margin collapses to 0 and the wrapper sits at top + scrolls
-        normally via `overflow-y-auto`. Best of both worlds:
-        - SignIn (short) → vertically centered
-        - SignUp (tall) → anchored top, scrolls inside the column */}
+        Anchor-top, NOT vertically centered: when the user toggles
+        between Sign In and Sign Up, the tab bar (and everything below
+        it) must stay at the same y-coordinate so nothing jumps. With
+        `my-auto` centering, SignIn (short) sat lower than SignUp
+        (tall), and switching tabs caused a visible jump. Anchored to
+        top with consistent `lg:py-16`, the tabs sit at the same
+        position on every auth screen. */}
     <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:px-10 xl:px-16 lg:py-16 lg:max-h-screen lg:overflow-y-auto">
-      <div className="w-full lg:max-w-[440px] lg:mx-auto lg:my-auto">
-        {children}
-      </div>
+      <div className="w-full lg:max-w-[440px] lg:mx-auto">{children}</div>
     </main>
   </div>
 );
