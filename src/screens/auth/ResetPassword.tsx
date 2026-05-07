@@ -86,7 +86,7 @@ export const ResetPasswordScreen = ({
   }
 
   return (
-    <AuthAtmosphere>
+    <AuthCanvas>
       <HaloWordmark />
       <div className="px-6 lg:px-0 anim-fade">
         <h1 className="sf-display text-[26px] font-bold text-white leading-tight tracking-[-0.025em] text-center mb-1.5">
@@ -123,7 +123,7 @@ export const ResetPasswordScreen = ({
           {loading ? <AuthSpinner label="Saving…" /> : 'Save password'}
         </button>
       </div>
-    </AuthAtmosphere>
+    </AuthCanvas>
   );
 };
 
