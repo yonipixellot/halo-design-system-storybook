@@ -57,6 +57,8 @@
     "dropIncomingPreGame": "DROP INCOMING · PRE-GAME",
     "yourDropIsUnlocked": "YOUR DROP IS UNLOCKED",
     "watchFullGame": "Watch full game",
+    "watchLive": "Watch live",
+    "momentsCaptured": "Moments captured",
     "retry": "Retry"
   },
   "viewer": {
