@@ -561,8 +561,9 @@ button { -webkit-tap-highlight-color: transparent; cursor: pointer; }
   --ink-surface:      rgba(26,26,31,0.06);
   --ink-surface-text: #1a1a1f;
 
-  /* Auth segmented toggle — matte-black active state in light mode */
-  --auth-tab-active-bg:   #0e1015;
+  /* Auth segmented toggle — navy active state in light mode (matches
+     the brand-panel navy on the left side of AuthCanvas, CLIENT.accent) */
+  --auth-tab-active-bg:   #0a1f3d;
   --auth-tab-active-text: #ffffff;
 }
 
