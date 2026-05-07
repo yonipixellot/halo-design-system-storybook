@@ -72,17 +72,19 @@ export const AuthCanvas = ({ children }: AuthCanvasProps) => (
 
     {/* Form panel — single render of children. Phone: transparent so
         atmosphere shows through. Desktop: clean canvas-bg of .glass-app.
-        Internal scroll at lg+ so long forms (e.g. SignUp's multi-step)
-        scroll inside the form column instead of letting the page push
-        the brand panel taller than the viewport.
 
-        Note: NO `justify-center` here — when a form is taller than the
-        viewport, justify-center pushes the top of the form (Sign In /
-        Sign Up tabs) above the scroll area's top, making it
-        unreachable. Anchor to top + `py-16` for breathing room and
-        let `overflow-y-auto` handle long forms. */}
+        Centering trick: `lg:my-auto` on the inner wrapper inside a
+        flex-col parent gives "center if fits, anchor-top if it
+        overflows" behavior. When content height < panel height, the
+        auto margin-block centers the wrapper. When content > panel,
+        margin collapses to 0 and the wrapper sits at top + scrolls
+        normally via `overflow-y-auto`. Best of both worlds:
+        - SignIn (short) → vertically centered
+        - SignUp (tall) → anchored top, scrolls inside the column */}
     <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:px-10 xl:px-16 lg:py-16 lg:max-h-screen lg:overflow-y-auto">
-      <div className="w-full lg:max-w-[440px] lg:mx-auto">{children}</div>
+      <div className="w-full lg:max-w-[440px] lg:mx-auto lg:my-auto">
+        {children}
+      </div>
     </main>
   </div>
 );
