@@ -25,7 +25,7 @@ export const DropsSection = ({
             <span className="lg-brand-dot" />
             {t('dropsThisWeek')}
           </h2>
-          <p className="sf text-[12px] text-white/55 mt-0.5 ms-[14px]">
+          <p className="sf text-[12px] text-white/55 mt-0.5">
             {t('home.dropsThisWeekSubtitle')}
           </p>
         </div>

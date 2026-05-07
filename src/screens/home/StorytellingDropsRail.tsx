@@ -121,7 +121,7 @@ export const StorytellingDropsRail = ({
             <span className="lg-brand-dot" />
             {t('storytellingDrops')}
           </h2>
-          <p className="sf text-[12px] text-white/55 mt-0.5 ms-[14px]">
+          <p className="sf text-[12px] text-white/55 mt-0.5">
             {t('home.storytellingDropsSubtitle')}
           </p>
         </div>
