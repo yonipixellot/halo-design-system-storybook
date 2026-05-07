@@ -57,7 +57,7 @@ const BrandPanel = () => (
 );
 
 export const AuthCanvas = ({ children, centered = false }: AuthCanvasProps) => (
-  <div className="anim-fade text-white sf relative w-full lg:flex lg:min-h-screen">
+  <div className="anim-fade text-white sf relative w-full min-h-screen lg:flex">
     {/* Phone-only: full-canvas atmosphere behind the form */}
     <div
       className="lg:hidden absolute inset-0 z-0 pointer-events-none"
