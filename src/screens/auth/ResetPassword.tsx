@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import {
-  AuthAtmosphere,
   HaloWordmark,
   GlassField,
   AuthErrorBanner,
   AuthSpinner,
   type AuthDispatch,
 } from './_shared';
+import { AuthCanvas } from '@/layouts/AuthCanvas';
 
 /* Verbatim port: halo-v3.2-glass.html lines 5512-5565, plus error/loading
    props + an "expired link" full-screen state for invalid tokens. */
@@ -42,8 +42,8 @@ export const ResetPasswordScreen = ({
 
   if (invalidToken) {
     return (
-      <AuthAtmosphere>
-        <div className="pt-24 px-6 text-center anim-fade">
+      <AuthCanvas>
+        <div className="pt-24 px-6 lg:pt-6 lg:px-0 text-center anim-fade">
           <div
             className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center"
             style={{
@@ -81,14 +81,14 @@ export const ResetPasswordScreen = ({
             Send a new link
           </button>
         </div>
-      </AuthAtmosphere>
+      </AuthCanvas>
     );
   }
 
   return (
     <AuthAtmosphere>
       <HaloWordmark />
-      <div className="px-6 anim-fade">
+      <div className="px-6 lg:px-0 anim-fade">
         <h1 className="sf-display text-[26px] font-bold text-white leading-tight tracking-[-0.025em] text-center mb-1.5">
           Set a new password
         </h1>
@@ -118,7 +118,7 @@ export const ResetPasswordScreen = ({
         <button
           onClick={submit}
           disabled={!valid || loading}
-          className="mt-5 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full sf text-[14.5px] font-semibold"
+          className="mt-5 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full lg:max-w-[400px] lg:mx-auto lg:block sf text-[14.5px] font-semibold"
         >
           {loading ? <AuthSpinner label="Saving…" /> : 'Save password'}
         </button>
@@ -128,8 +128,8 @@ export const ResetPasswordScreen = ({
 };
 
 export const ResetDoneScreen = ({ dispatch }: { dispatch: AuthDispatch }) => (
-  <AuthAtmosphere>
-    <div className="pt-24 px-6 text-center anim-fade">
+  <AuthCanvas>
+    <div className="pt-24 px-6 lg:pt-6 lg:px-0 text-center anim-fade">
       <div
         className="w-16 h-16 rounded-full lg-glass-strong mx-auto mb-5 flex items-center justify-center"
         style={{ boxShadow: '0 0 32px rgba(0,214,254,0.45)' }}
@@ -160,5 +160,5 @@ export const ResetDoneScreen = ({ dispatch }: { dispatch: AuthDispatch }) => (
         Back to sign in
       </button>
     </div>
-  </AuthAtmosphere>
+  </AuthCanvas>
 );

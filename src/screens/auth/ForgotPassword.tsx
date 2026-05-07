@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import {
-  AuthAtmosphere,
   GlassField,
   AuthErrorBanner,
   AuthSpinner,
   type AuthDispatch,
 } from './_shared';
+import { AuthCanvas } from '@/layouts/AuthCanvas';
 
 /* Verbatim port: halo-v3.2-glass.html lines 5450-5510, plus error/loading
    props so the FE team can drive UI from their reducer / API response. */
@@ -35,8 +35,8 @@ export const ForgotPasswordScreen = ({
   const back = () => dispatch({ type: 'SET_AUTH_STEP', step: 'signin' });
 
   return (
-    <AuthAtmosphere>
-      <div className="pt-12 px-5">
+    <AuthCanvas>
+      <div className="pt-12 px-5 lg:pt-0 lg:px-0">
         <button
           onClick={back}
           disabled={loading}
@@ -57,7 +57,7 @@ export const ForgotPasswordScreen = ({
           </svg>
         </button>
       </div>
-      <div className="px-6 pt-8 anim-fade">
+      <div className="px-6 pt-8 lg:px-0 lg:pt-6 anim-fade">
         <h1 className="sf-display text-[28px] font-bold text-white leading-tight tracking-[-0.025em] mb-1.5">
           Reset password
         </h1>
@@ -77,12 +77,12 @@ export const ForgotPasswordScreen = ({
         <button
           onClick={send}
           disabled={!valid || loading}
-          className="mt-5 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full sf text-[14.5px] font-semibold"
+          className="mt-5 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full lg:max-w-[400px] lg:mx-auto lg:block sf text-[14.5px] font-semibold"
         >
           {loading ? <AuthSpinner label="Sending…" /> : 'Send reset link'}
         </button>
       </div>
-    </AuthAtmosphere>
+    </AuthCanvas>
   );
 };
 
@@ -90,8 +90,8 @@ export const ForgotSentScreen = ({ dispatch }: { dispatch: AuthDispatch }) => {
   const back = () => dispatch({ type: 'SET_AUTH_STEP', step: 'signin' });
 
   return (
-    <AuthAtmosphere>
-      <div className="pt-24 px-6 text-center anim-fade">
+    <AuthCanvas>
+      <div className="pt-24 px-6 lg:pt-6 lg:px-0 text-center anim-fade">
         <div
           className="w-16 h-16 rounded-full lg-glass-strong mx-auto mb-5 flex items-center justify-center"
           style={{ boxShadow: '0 0 32px rgba(0,214,254,0.45)' }}
@@ -123,6 +123,6 @@ export const ForgotSentScreen = ({ dispatch }: { dispatch: AuthDispatch }) => {
           Back to sign in
         </button>
       </div>
-    </AuthAtmosphere>
+    </AuthCanvas>
   );
 };

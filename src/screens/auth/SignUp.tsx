@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  AuthAtmosphere,
   ClientLogoHero,
   AuthModeToggle,
   GlassField,
@@ -12,6 +11,7 @@ import {
   AuthSuccessCard,
   type AuthDispatch,
 } from './_shared';
+import { AuthCanvas } from '@/layouts/AuthCanvas';
 
 /* Verbatim port: halo-v3.2-glass.html line 5213, plus error/loading/success
    props so the FE team can drive UI from their reducer / API response. */
@@ -57,7 +57,7 @@ export const SignUpScreen = ({
 
   if (emailSent) {
     return (
-      <AuthAtmosphere>
+      <AuthCanvas>
         <ClientLogoHero />
         <AuthSuccessCard
           title="Check your inbox"
@@ -65,7 +65,7 @@ export const SignUpScreen = ({
           cta="Back to sign in"
           onCta={() => dispatch({ type: 'SET_AUTH_STEP', step: 'signin' })}
         />
-      </AuthAtmosphere>
+      </AuthCanvas>
     );
   }
 
@@ -212,9 +212,9 @@ export const SignUpScreen = ({
   ];
 
   return (
-    <AuthAtmosphere>
+    <AuthCanvas>
       <ClientLogoHero />
-      <div className="px-6 pt-6 pb-8 anim-fade">
+      <div className="px-6 pt-6 pb-8 lg:px-0 lg:pt-4 lg:pb-0 anim-fade">
         <AuthModeToggle mode="signup" onChange={(m) => m === 'signin' && goSignIn()} />
 
         {/* Step indicator */}
@@ -407,7 +407,7 @@ export const SignUpScreen = ({
             <button
               onClick={signUp}
               disabled={!valid || loading}
-              className="mt-6 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full sf text-[14.5px] font-semibold"
+              className="mt-6 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full lg:max-w-[400px] lg:mx-auto lg:block sf text-[14.5px] font-semibold"
             >
               {loading ? <AuthSpinner label="Creating account…" /> : 'Continue'}
             </button>
@@ -443,6 +443,6 @@ export const SignUpScreen = ({
           </>
         )}
       </div>
-    </AuthAtmosphere>
+    </AuthCanvas>
   );
 };
