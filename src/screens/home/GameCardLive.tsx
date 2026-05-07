@@ -3,16 +3,16 @@ import { useTranslation } from 'react-i18next';
 import type { Game } from './_data';
 
 /* GameCardLive — in-game card with the highest energy of any GameCard
-   variant. Composition:
-     • Top strip: LIVE pill (red), viewer count, period chip
-     • Body: matchup + tabular score
-     • NEW: status line + "Watch live" CTA (red-filled, prominent)
+   variant. Composition (May 2026 redesign):
+     • Top strip:   LIVE pill (start) · viewer count + period (end)
+     • Body row:    team name + matchup (start) · score (end)
+     • Footer row:  compact "Watch live" CTA pinned to the trailing
+                    edge at ~33% width — visually completes the score
+                    column and reads as the natural action target
 
    Outer container is a div with role="button" + keyboard handlers (not
    a real <button>) so we can nest the Watch-live primary button inside
-   for an explicit affordance while keeping the whole card tappable.
-   The lg-live-ember class adds a breathing red glow; lg-live-amp adds
-   the inner tally rail + broadcast sweep. */
+   for an explicit affordance while keeping the whole card tappable. */
 
 export interface GameCardLiveProps {
   game: Game;
@@ -23,12 +23,12 @@ export interface GameCardLiveProps {
 
 const PlayIcon = () => (
   <svg
-    width={14}
-    height={14}
+    width={13}
+    height={13}
     viewBox="0 0 14 14"
     fill="currentColor"
     stroke="none"
-    style={{ width: 14, height: 14, display: 'block' }}
+    style={{ width: 13, height: 13, display: 'block' }}
     aria-hidden="true"
   >
     <path d="M3 2 L12 7 L3 12 Z" />
@@ -38,7 +38,8 @@ const PlayIcon = () => (
 export const GameCardLive = ({ game, onWatch }: GameCardLiveProps) => {
   const { t } = useTranslation();
   /* Score "ticks" — every 6s there's a 50% chance momentsCount climbs by 1.
-     Sympathetic to the broadcast feel; not a real score model. */
+     Sympathetic to the broadcast feel; not a real score model. The
+     value still feeds the viewer-count proxy in the header. */
   const [moments, setMoments] = useState(game.momentsCount || 5);
   useEffect(() => {
     const tick = setInterval(
@@ -75,29 +76,26 @@ export const GameCardLive = ({ game, onWatch }: GameCardLiveProps) => {
       {/* Inner amp overlay — tally rail + broadcast sweep + ambient red mood. */}
       <div className="lg-live-amp" aria-hidden="true" />
 
-      {/* Header strip — LIVE pill + period + viewer count */}
+      {/* Header strip — LIVE pill + viewer count + period */}
       <div
-        className="relative px-4 pt-3 pb-2 flex items-center justify-between"
+        className="relative px-4 pt-3 pb-2 lg:px-5 flex items-center justify-between"
         style={{ borderBottom: '1px solid var(--hairline)', zIndex: 2 }}
       >
-        <div className="flex items-center gap-2">
-          <div className="live-red squircle-sm px-2 py-1 inline-flex items-center gap-1.5">
-            <div
-              className="w-2 h-2 rounded-full bg-white anim-pulse-dot"
-              style={{
-                boxShadow: '0 0 6px rgba(255,255,255,0.95)',
-                flexShrink: 0,
-              }}
-            />
-            <span
-              className="sf text-[10px] font-bold tracking-[0.18em] uppercase leading-none"
-              style={{ color: '#FFF' }}
-            >
-              LIVE
-            </span>
-          </div>
+        <div className="live-red squircle-sm px-2 py-1 inline-flex items-center gap-1.5">
+          <div
+            className="w-2 h-2 rounded-full bg-white anim-pulse-dot"
+            style={{
+              boxShadow: '0 0 6px rgba(255,255,255,0.95)',
+              flexShrink: 0,
+            }}
+          />
+          <span
+            className="sf text-[10px] font-bold tracking-[0.18em] uppercase leading-none"
+            style={{ color: '#FFF' }}
+          >
+            LIVE
+          </span>
         </div>
-
         <div className="flex items-center gap-2">
           <span className="sf text-[10px] font-medium tracking-tight text-white/60">
             ○ {moments * 8 + 2}
@@ -108,48 +106,43 @@ export const GameCardLive = ({ game, onWatch }: GameCardLiveProps) => {
         </div>
       </div>
 
-      {/* Body — matchup + score */}
+      {/* Body row — team / matchup vs score. Typography scales up at lg+
+          so the card carries weight at desktop without feeling stretched. */}
       <div
-        className="relative p-4 lg:p-5 flex items-end justify-between"
+        className="relative px-4 pt-4 lg:px-5 lg:pt-5 flex items-end justify-between gap-4"
         style={{ zIndex: 2 }}
       >
-        <div>
-          <div className="sf-display text-[15px] lg:text-[18px] font-bold text-white tracking-[-0.01em] leading-tight">
+        <div className="min-w-0">
+          <div className="sf-display text-[20px] lg:text-[24px] font-bold text-white tracking-[-0.02em] leading-[1.05] truncate">
             {game.home}
           </div>
-          <div className="sf text-[11.5px] lg:text-[12.5px] text-white/60 mt-0.5">
+          <div className="sf text-[12px] lg:text-[13px] text-white/60 mt-1 truncate">
             vs {game.away}
           </div>
         </div>
-        <div className="sf-display text-[28px] lg:text-[32px] font-bold tabular-nums leading-none text-white">
+        <div className="sf-display text-[32px] lg:text-[40px] font-bold tabular-nums leading-none text-white tracking-[-0.02em] shrink-0">
           {game.scoreHome}
-          <span className="text-white/35 mx-2">·</span>
+          <span className="text-white/35 mx-1.5">·</span>
           {game.scoreAway}
         </div>
       </div>
 
-      {/* Status line + Watch-live CTA — gives the card more presence and
-          an explicit primary action. Status line shows live moment
-          tally; CTA fires the same onWatch handler as the outer card.
-          stopPropagation prevents double-fire. CTA capped at 360 on
-          desktop and centered inside the card. */}
+      {/* Footer row — compact Watch-live CTA pinned to trailing edge.
+          ~50% on phone (room for icon + label), ~33% at lg+ for a
+          tighter visual landing under the score column. ms-auto pins
+          to inline-end so it RTL-flips. stopPropagation so the inner
+          button doesn't double-fire with the outer card. */}
       <div
-        className="relative px-4 pb-4 lg:px-5 lg:pb-5"
+        className="relative px-4 pt-3 pb-4 lg:px-5 lg:pb-5 flex"
         style={{ zIndex: 2 }}
       >
-        <div
-          className="sf text-[10.5px] tracking-[0.14em] uppercase font-bold text-white/55 mb-2.5 text-center lg:text-start"
-          aria-live="polite"
-        >
-          {moments} {t('home.momentsCaptured')}
-        </div>
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             fire();
           }}
-          className="live-red w-full lg:max-w-[360px] lg:mx-auto squircle-md py-3 flex items-center justify-center gap-2 sf text-[14px] font-semibold"
+          className="live-red ms-auto w-1/2 lg:w-1/3 lg:max-w-[280px] squircle-md py-2.5 flex items-center justify-center gap-2 sf text-[13.5px] font-semibold whitespace-nowrap"
         >
           <PlayIcon />
           {t('home.watchLive')}
