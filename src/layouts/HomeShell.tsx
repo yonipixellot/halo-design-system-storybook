@@ -16,7 +16,9 @@ export interface HomeShellProps {
   header?: AppHeaderProps;
   /** Constrains the main column max-width at lg+. Pass a number for a
       hard cap, or 'full' to let the feed use whatever width is left
-      after SideNav. Default: 'full'. */
+      after SideNav. Default: 1200 — the whole feed (rails + cards)
+      lives inside this wrapper so every section's start gutter auto-
+      aligns. Pass 'full' if a page wants to opt out. */
   mainMaxWidth?: number | 'full';
 }
 
@@ -24,7 +26,7 @@ export const HomeShell = ({
   children,
   sideNav,
   header,
-  mainMaxWidth = 'full',
+  mainMaxWidth = 1200,
 }: HomeShellProps) => (
   <div className="lg:flex lg:min-h-screen w-full">
     <SideNav {...(sideNav ?? {})} />

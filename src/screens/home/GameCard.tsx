@@ -47,24 +47,14 @@ export const GameCard = ({
     return <NextGameTeaser />;
   }
 
-  /* Per-state desktop max-width — Live gets a bit more presence
-     (highest-energy state in the app), Error stays small and quiet,
-     everything else lands on a sensible single-card cap. Phone
-     unchanged everywhere. */
-  const maxWClass = (() => {
-    switch (state) {
-      case 'live':
-        return 'lg:max-w-[960px]';
-      case 'error':
-        return 'lg:max-w-[560px]';
-      default:
-        return 'lg:max-w-[840px]';
-    }
-  })();
-
+  /* Wrapper just provides the gutter that matches every other Home
+     section (rails, etc.). The whole feed is constrained at the
+     HomeShell level (max-w-1200), so we no longer need a per-state
+     max-w + mx-auto here — the card inherits its width from the
+     wrapper, and its start edge auto-aligns with rail headers. */
   if (state === 'error') {
     return (
-      <div className={`px-4 mt-3 mb-4 lg:px-8 xl:px-12 lg:mx-auto ${maxWClass}`}>
+      <div className="px-4 mt-3 mb-4 lg:px-8 xl:px-12">
         <GameCardError onRetry={onRetry} onReport={onReport} />
       </div>
     );
@@ -79,7 +69,7 @@ export const GameCard = ({
   if (!resolved) return <NextGameTeaser />;
 
   return (
-    <div className={`px-4 mt-3 mb-4 lg:px-8 xl:px-12 lg:mx-auto ${maxWClass}`}>
+    <div className="px-4 mt-3 mb-4 lg:px-8 xl:px-12">
       {state === 'pre' && <GameCardPre game={resolved} />}
       {state === 'live' && <GameCardLive game={resolved} onWatch={onWatch} />}
       {state === 'just-ended' && <GameCardJustEnded game={resolved} />}

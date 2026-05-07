@@ -247,7 +247,7 @@ export const NextGameTeaser = ({
   );
 
   return (
-    <div className="px-4 mt-3 mb-4 lg:px-8 xl:px-12 lg:max-w-[1080px] lg:mx-auto">
+    <div className="px-4 mt-3 mb-4 lg:px-8 xl:px-12">
       {/* Phone: single combined card with internal divider */}
       <div
         className="lg:hidden relative squircle-md overflow-hidden lg-teaser-ember"
