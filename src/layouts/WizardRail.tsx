@@ -45,6 +45,10 @@ export interface WizardRailProps {
   secondaryAction?: ReactNode;
   /** The actual step content — fills the inline-end column. */
   children: ReactNode;
+  /** Outer max-width at lg+. Default 1200, matching HomeShell — keeps
+      the rail+content composite anchored on wide canvases instead of
+      drifting in 1920+ voids. Pass 'full' to opt out. */
+  contentMaxWidth?: number | 'full';
 }
 
 const StepDot = ({ status }: { status: WizardStep['status'] }) => (
@@ -80,9 +84,15 @@ export const WizardRail = ({
   cta,
   secondaryAction,
   children,
+  contentMaxWidth = 1200,
 }: WizardRailProps) => {
   return (
-    <div className="lg:flex lg:min-h-screen w-full">
+    <div
+      className="lg:flex lg:min-h-screen w-full lg:mx-auto"
+      style={{
+        maxWidth: contentMaxWidth === 'full' ? undefined : contentMaxWidth,
+      }}
+    >
       {/* Rail — hidden below lg; pages keep their phone OnboardStepper */}
       <aside
         className="hidden lg:flex lg:flex-col shrink-0 sticky top-0 h-screen"

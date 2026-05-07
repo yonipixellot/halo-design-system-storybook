@@ -25,17 +25,23 @@ export interface MomentCanvasProps {
   /** Render an lg-atmosphere on phone too (default: false — pages
       typically render their own). */
   phoneAtmosphere?: boolean;
+  /** Outer content max-width at lg+. Atmosphere is always full canvas;
+      this caps the content frame so the moment card stays anchored
+      inside a 1200 box rather than drifting on 1920+ voids. Default
+      1200, matches HomeShell. Pass 'full' to opt out. */
+  contentMaxWidth?: number | 'full';
 }
 
 export const MomentCanvas = ({
   children,
   phoneAtmosphere = false,
+  contentMaxWidth = 1200,
 }: MomentCanvasProps) => (
   <div
-    className="relative w-full lg:min-h-screen lg:flex lg:items-center lg:justify-center lg:px-6 lg:py-10"
+    className="relative w-full lg:min-h-screen"
     style={{ minHeight: '100%' }}
   >
-    {/* Atmosphere layer — always at lg+, optionally on phone */}
+    {/* Atmosphere layer — full canvas at lg+, optionally on phone */}
     <div className={phoneAtmosphere ? 'block' : 'hidden lg:block'}>
       <div className="lg-atmosphere" />
       <div
@@ -47,21 +53,30 @@ export const MomentCanvas = ({
       />
     </div>
 
-    {/* Content — full bleed on phone, glass card on desktop */}
+    {/* Content frame — capped at contentMaxWidth and centered. The glass
+        card lives inside this frame; the atmosphere outside continues
+        edge-to-edge. */}
     <div
-      className={[
-        'relative z-10 w-full',
-        /* Desktop: glass card */
-        'lg:lg-glass-card',
-        'lg:squircle-lg',
-        'lg:max-w-[560px]',
-        'lg:py-12',
-        'lg:px-10',
-        'lg:max-h-[calc(100vh-80px)]',
-        'lg:overflow-y-auto',
-      ].join(' ')}
+      className="relative z-10 lg:mx-auto lg:flex lg:items-center lg:justify-center lg:min-h-screen lg:px-6 lg:py-10"
+      style={{
+        maxWidth: contentMaxWidth === 'full' ? undefined : contentMaxWidth,
+      }}
     >
-      {children}
+      <div
+        className={[
+          'w-full',
+          /* Desktop: glass card */
+          'lg:lg-glass-card',
+          'lg:squircle-lg',
+          'lg:max-w-[560px]',
+          'lg:py-12',
+          'lg:px-10',
+          'lg:max-h-[calc(100vh-80px)]',
+          'lg:overflow-y-auto',
+        ].join(' ')}
+      >
+        {children}
+      </div>
     </div>
   </div>
 );

@@ -19,13 +19,27 @@ import { AuthAtmosphere } from '@/screens/auth/_shared';
 
 export interface AuthCanvasProps {
   children: ReactNode;
+  /** Outer content max-width at lg+. Atmosphere is always full canvas;
+      this caps the content frame so on very wide displays the card
+      stays anchored inside a 1200 box rather than drifting in 1920+
+      voids. Default 1200, matches HomeShell. Pass 'full' to opt out. */
+  contentMaxWidth?: number | 'full';
 }
 
-export const AuthCanvas = ({ children }: AuthCanvasProps) => (
+export const AuthCanvas = ({
+  children,
+  contentMaxWidth = 1200,
+}: AuthCanvasProps) => (
   <AuthAtmosphere>
-    {/* Centered glass card at lg+. Phone keeps the existing full-bleed
-        column treatment. */}
-    <div className="lg:flex lg:items-center lg:justify-center lg:min-h-screen lg:px-6 lg:py-10">
+    {/* Content wrapper — centered glass card at lg+, capped at the
+        contentMaxWidth so the card doesn't drift on ultra-wide canvases.
+        Phone keeps the existing full-bleed column treatment. */}
+    <div
+      className="lg:flex lg:items-center lg:justify-center lg:min-h-screen lg:px-6 lg:py-10 lg:mx-auto"
+      style={{
+        maxWidth: contentMaxWidth === 'full' ? undefined : contentMaxWidth,
+      }}
+    >
       <div
         className={[
           /* Phone: passthrough — no card chrome */

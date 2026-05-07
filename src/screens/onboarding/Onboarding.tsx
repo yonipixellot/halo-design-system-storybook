@@ -65,7 +65,10 @@ export const Onboarding = () => {
   }
 
   return (
-    <div className="absolute inset-0 anim-fade onboard-glass">
+    /* Phone: full-bleed absolute layout. Desktop: relative + min-h-screen
+       so atmosphere stays full-canvas, content frame centers at the
+       app-wide 1200 cap. */
+    <div className="absolute inset-0 anim-fade onboard-glass lg:relative lg:inset-auto lg:min-h-screen">
       <div className="lg-atmosphere" />
       <div
         className="absolute inset-0 z-[1] pointer-events-none"
@@ -74,7 +77,7 @@ export const Onboarding = () => {
             'linear-gradient(180deg, var(--vignette-corner) 0%, transparent 30%, transparent 70%, var(--vignette-corner-soft) 100%)',
         }}
       />
-      <div className="absolute inset-0 z-10 flex flex-col">
+      <div className="absolute inset-0 z-10 flex flex-col lg:relative lg:inset-auto lg:min-h-screen lg:max-w-[1200px] lg:mx-auto">
         {step === 'persona' && (
           <PersonaStep
             onPick={(p) => {
