@@ -1,6 +1,76 @@
 import { useEffect, useState, type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Game } from './_data';
+import { TEAM_LOGOS } from './_avatars';
+import { TEAMS_DB } from '@/screens/onboarding/_data';
+
+/* Team badge used on either side of the score. Tries the bundled
+   TEAM_LOGOS image when we can resolve a team initial; otherwise falls
+   back to a 1-2 letter monogram on a glass-strong disc.
+
+   Home team gets a cyan ring (subtle "this is your team" cue); away
+   team is plain glass-strong. */
+const TeamBadge = ({
+  name,
+  side,
+  initial,
+  size = 44,
+}: {
+  name: string;
+  side: 'home' | 'away';
+  /** Optional team initial — used to look up a real logo image. */
+  initial?: string;
+  size?: number;
+}) => {
+  const monogram = name
+    .split(/\s+/)
+    .map((w) => w[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
+  const logoUrl =
+    initial && (TEAM_LOGOS as Record<string, string>)[initial];
+
+  const accentBorder =
+    side === 'home'
+      ? '1.5px solid var(--brand-cyan)'
+      : '1px solid var(--glass-strong-border)';
+  const accentShadow =
+    side === 'home'
+      ? '0 0 14px -2px var(--brand-cyan-glow), inset 0 1px 0 rgba(255,255,255,0.10)'
+      : 'inset 0 1px 0 rgba(255,255,255,0.10)';
+
+  return (
+    <div
+      className="rounded-full lg-glass-strong flex items-center justify-center shrink-0 overflow-hidden"
+      style={{
+        width: size,
+        height: size,
+        border: accentBorder,
+        boxShadow: accentShadow,
+      }}
+      aria-label={name}
+    >
+      {logoUrl ? (
+        <img
+          src={logoUrl}
+          alt=""
+          className="w-full h-full"
+          style={{ objectFit: 'cover' }}
+        />
+      ) : (
+        <span
+          className="sf-display font-bold text-white tracking-tight"
+          style={{ fontSize: Math.round(size * 0.34) }}
+        >
+          {monogram}
+        </span>
+      )}
+    </div>
+  );
+};
 
 /* GameCardLive — in-game card with the highest energy of any GameCard
    variant. Composition (May 2026 redesign):
@@ -106,24 +176,36 @@ export const GameCardLive = ({ game, onWatch }: GameCardLiveProps) => {
         </div>
       </div>
 
-      {/* Body row — team / matchup vs score. Typography scales up at lg+
-          so the card carries weight at desktop without feeling stretched. */}
+      {/* Body — scoreboard treatment. [home logo] 28 · 24 [away logo]
+          centered, with the matchup line directly below it. The home
+          badge tries to render the bundled logo image (resolved via
+          game.teamId → TEAMS_DB → initial → TEAM_LOGOS); the away
+          badge falls back to a monogram. Score scales up at lg+ so
+          it reads as the hero. */}
       <div
-        className="relative px-4 pt-4 lg:px-5 lg:pt-5 flex items-end justify-between gap-4"
+        className="relative px-4 pt-4 lg:px-5 lg:pt-5"
         style={{ zIndex: 2 }}
       >
-        <div className="min-w-0">
-          <div className="sf-display text-[20px] lg:text-[24px] font-bold text-white tracking-[-0.02em] leading-[1.05] truncate">
-            {game.home}
+        <div className="flex items-center justify-center gap-4 lg:gap-6">
+          <TeamBadge
+            name={game.home}
+            side="home"
+            initial={
+              TEAMS_DB.find((tm) => tm.id === game.teamId)?.initial
+            }
+            size={44}
+          />
+          <div className="sf-display text-[36px] lg:text-[48px] font-bold tabular-nums leading-none text-white tracking-[-0.03em] flex items-baseline gap-2 lg:gap-3">
+            <span>{game.scoreHome}</span>
+            <span className="text-white/30">·</span>
+            <span>{game.scoreAway}</span>
           </div>
-          <div className="sf text-[12px] lg:text-[13px] text-white/60 mt-1 truncate">
-            vs {game.away}
-          </div>
+          <TeamBadge name={game.away} side="away" size={44} />
         </div>
-        <div className="sf-display text-[32px] lg:text-[40px] font-bold tabular-nums leading-none text-white tracking-[-0.02em] shrink-0">
-          {game.scoreHome}
-          <span className="text-white/35 mx-1.5">·</span>
-          {game.scoreAway}
+
+        {/* Matchup line — small, centered caption below the scoreboard */}
+        <div className="text-center mt-2.5 sf text-[11.5px] lg:text-[12.5px] text-white/55 truncate">
+          {game.home} <span className="text-white/35 mx-1">vs</span> {game.away}
         </div>
       </div>
 
