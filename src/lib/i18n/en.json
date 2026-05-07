@@ -96,6 +96,8 @@
     "he": "עברית"
   },
   "auth": {
+    "heroTagline": "Your highlights, automatic.",
+    "heroBody": "From locker room to shareable drop in 90 seconds. Halo turns your games into moments you actually want to send.",
     "signIn": "Sign in",
     "signUp": "Sign up",
     "email": "Email",
