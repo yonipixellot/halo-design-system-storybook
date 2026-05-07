@@ -19,7 +19,7 @@ export const DropsSection = ({
   const isEmpty = recent.length === 0;
   return (
     <div className="mb-7">
-      <div className="px-5 flex items-end justify-between mb-3">
+      <div className="px-5 lg:px-8 xl:px-12 flex items-end justify-between mb-3">
         <div>
           <h2 className="sf-display text-[17px] font-bold tracking-[-0.015em] text-white leading-tight">
             <span className="lg-brand-dot" />

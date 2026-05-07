@@ -115,7 +115,7 @@ export const StorytellingDropsRail = ({
   if (!items.length) return null;
   return (
     <div className="mb-7">
-      <div className="px-5 mb-3 flex items-end justify-between">
+      <div className="px-5 lg:px-8 xl:px-12 mb-3 flex items-end justify-between">
         <div>
           <h2 className="sf-display text-[17px] font-bold tracking-[-0.015em] text-white leading-tight">
             <span className="lg-brand-dot" />
