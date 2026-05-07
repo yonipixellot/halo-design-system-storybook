@@ -73,14 +73,14 @@ export const AuthCanvas = ({ children }: AuthCanvasProps) => (
     {/* Form panel — single render of children. Phone: transparent so
         atmosphere shows through. Desktop: clean canvas-bg of .glass-app.
 
-        Anchor-top, NOT vertically centered: when the user toggles
-        between Sign In and Sign Up, the tab bar (and everything below
-        it) must stay at the same y-coordinate so nothing jumps. With
-        `my-auto` centering, SignIn (short) sat lower than SignUp
-        (tall), and switching tabs caused a visible jump. Anchored to
-        top with consistent `lg:py-16`, the tabs sit at the same
-        position on every auth screen. */}
-    <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:px-10 xl:px-16 lg:py-16 lg:max-h-screen lg:overflow-y-auto">
+        Both forms start at the same y-coordinate so toggling Sign In ↔
+        Sign Up doesn't cause the tab bar to jump. The starting offset
+        is deliberately deeper than a normal page top: `pt-[14vh]`
+        scales with viewport — on a 900-tall viewport that's ~126px
+        from the top — so SignIn (short) feels balanced rather than
+        crammed at top, and SignUp (tall) starts at the same point and
+        scrolls inside the column when content exceeds viewport. */}
+    <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:px-10 xl:px-16 lg:pt-[14vh] lg:pb-16 lg:max-h-screen lg:overflow-y-auto">
       <div className="w-full lg:max-w-[440px] lg:mx-auto">{children}</div>
     </main>
   </div>
