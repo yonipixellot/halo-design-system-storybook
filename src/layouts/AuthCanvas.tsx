@@ -41,13 +41,10 @@ const BrandPanel = () => (
       color: '#fff',
     }}
   >
-    {/* Big cyan HALO mark — centered, scaled up from ClientLogoHero. */}
-    <div
-      style={{
-        filter: 'drop-shadow(0 0 64px rgba(0,214,254,0.45))',
-        transform: 'scale(1.6)',
-      }}
-    >
+    {/* Cyan HALO mark — native ClientLogoMark size, slight glow only.
+        Scaled treatment was overpowering at 1.6×; native sits with
+        comfortable breathing room. */}
+    <div style={{ filter: 'drop-shadow(0 0 40px rgba(0,214,254,0.35))' }}>
       <ClientLogoMark />
     </div>
   </aside>
@@ -74,8 +71,11 @@ export const AuthCanvas = ({ children }: AuthCanvasProps) => (
     <BrandPanel />
 
     {/* Form panel — single render of children. Phone: transparent so
-        atmosphere shows through. Desktop: clean canvas-bg of .glass-app. */}
-    <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:justify-center lg:px-10 xl:px-16 lg:py-16">
+        atmosphere shows through. Desktop: clean canvas-bg of .glass-app.
+        Internal scroll at lg+ so long forms (e.g. SignUp's multi-step)
+        scroll inside the form column instead of letting the page
+        overflow + push the brand panel taller than the viewport. */}
+    <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:justify-center lg:px-10 xl:px-16 lg:py-16 lg:max-h-screen lg:overflow-y-auto">
       <div className="w-full lg:max-w-[440px] lg:mx-auto">{children}</div>
     </main>
   </div>
