@@ -77,7 +77,7 @@ export const ForgotPasswordScreen = ({
         <button
           onClick={send}
           disabled={!valid || loading}
-          className="mt-5 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full lg:max-w-[400px] lg:mx-auto lg:block sf text-[14.5px] font-semibold"
+          className="mt-5 lg-btn-primary lg-shine lg-aura squircle-md py-3.5 w-full sf text-[14.5px] font-semibold"
         >
           {loading ? <AuthSpinner label="Sending…" /> : 'Send reset link'}
         </button>
