@@ -25,6 +25,12 @@ export interface AuthCanvasProps {
   /** Reserved for future use; the split-screen layout supersedes the
       single content cap. Kept on the prop list for API compatibility. */
   contentMaxWidth?: number | 'full';
+  /** When true (default for screens without tabs — Forgot, Reset,
+      success, error states), vertically center the form content in the
+      panel via `lg:my-auto`. SignIn/SignUp leave this false (default)
+      so the tab bar position stays stable when the user toggles
+      between them. */
+  centered?: boolean;
 }
 
 const BrandPanel = () => (
@@ -50,7 +56,7 @@ const BrandPanel = () => (
   </aside>
 );
 
-export const AuthCanvas = ({ children }: AuthCanvasProps) => (
+export const AuthCanvas = ({ children, centered = false }: AuthCanvasProps) => (
   <div className="anim-fade text-white sf relative w-full lg:flex lg:min-h-screen">
     {/* Phone-only: full-canvas atmosphere behind the form */}
     <div
@@ -80,8 +86,25 @@ export const AuthCanvas = ({ children }: AuthCanvasProps) => (
         from the top — so SignIn (short) feels balanced rather than
         crammed at top, and SignUp (tall) starts at the same point and
         scrolls inside the column when content exceeds viewport. */}
-    <main className="relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:px-10 xl:px-16 lg:pt-[20vh] lg:pb-16 lg:max-h-screen lg:overflow-y-auto">
-      <div className="w-full lg:max-w-[440px] lg:mx-auto">{children}</div>
+    <main
+      className={[
+        'relative z-10 lg:flex-[9] lg:flex lg:flex-col lg:px-10 xl:px-16 lg:pb-16 lg:max-h-screen lg:overflow-y-auto',
+        /* SignIn/SignUp (centered=false): anchor-top with pt-[20vh] so
+           the tab bar sits at a consistent y-coordinate when the user
+           toggles between the two screens.
+           Forgot/Reset (centered=true): pt-16 + my-auto on inner so
+           the form genuinely centers in the viewport. */
+        centered ? 'lg:pt-16' : 'lg:pt-[20vh]',
+      ].join(' ')}
+    >
+      <div
+        className={[
+          'w-full lg:max-w-[440px] lg:mx-auto',
+          centered ? 'lg:my-auto' : '',
+        ].join(' ')}
+      >
+        {children}
+      </div>
     </main>
   </div>
 );

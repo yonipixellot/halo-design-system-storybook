@@ -42,7 +42,7 @@ export const ResetPasswordScreen = ({
 
   if (invalidToken) {
     return (
-      <AuthCanvas>
+      <AuthCanvas centered>
         <div className="pt-24 px-6 lg:pt-6 lg:px-0 text-center anim-fade">
           <div
             className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center"
@@ -76,7 +76,14 @@ export const ResetPasswordScreen = ({
           </p>
           <button
             onClick={() => dispatch({ type: 'SET_AUTH_STEP', step: 'forgot' })}
-            className="lg-btn-primary lg-shine squircle-md py-3 px-6 sf text-[13px] font-semibold"
+            className="squircle-md py-3 px-6 sf text-[13px] font-semibold"
+          style={{
+            background: 'var(--auth-tab-active-bg)',
+            color: 'var(--auth-tab-active-text)',
+            border: '1px solid var(--auth-tab-active-bg)',
+            boxShadow:
+              'inset 0 1px 0 rgba(255,255,255,0.10), 0 2px 8px -2px rgba(0,0,0,0.18)',
+          }}
           >
             Send a new link
           </button>
@@ -128,7 +135,7 @@ export const ResetPasswordScreen = ({
 };
 
 export const ResetDoneScreen = ({ dispatch }: { dispatch: AuthDispatch }) => (
-  <AuthCanvas>
+  <AuthCanvas centered>
     <div className="pt-24 px-6 lg:pt-6 lg:px-0 text-center anim-fade">
       <div
         className="w-16 h-16 rounded-full lg-glass-strong mx-auto mb-5 flex items-center justify-center"
@@ -155,7 +162,14 @@ export const ResetDoneScreen = ({ dispatch }: { dispatch: AuthDispatch }) => (
       </p>
       <button
         onClick={() => dispatch({ type: 'SET_AUTH_STEP', step: 'signin' })}
-        className="lg-btn-primary lg-shine squircle-md py-3 px-6 sf text-[13px] font-semibold"
+        className="squircle-md py-3 px-6 sf text-[13px] font-semibold"
+        style={{
+          background: 'var(--auth-tab-active-bg)',
+          color: 'var(--auth-tab-active-text)',
+          border: '1px solid var(--auth-tab-active-bg)',
+          boxShadow:
+            'inset 0 1px 0 rgba(255,255,255,0.10), 0 2px 8px -2px rgba(0,0,0,0.18)',
+        }}
       >
         Back to sign in
       </button>
