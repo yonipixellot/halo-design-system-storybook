@@ -54,8 +54,7 @@ export const WatchHeroDesktop = ({
 
   const data = {
     period: isLive ? (game.period ?? '') : 'FINAL',
-    home: game.home,
-    away: game.away,
+    title: `${game.home} vs ${game.away}`,
     score: `${game.scoreHome} — ${game.scoreAway}`,
     gameId: game.id,
     sub: 'BASKETBALL · U18 · EASTSIDE GYM',
@@ -133,8 +132,9 @@ export const WatchHeroDesktop = ({
           each rail's section header. */}
       <div className="relative z-10 mx-auto max-w-[1200px] px-8 xl:px-12 py-20 flex flex-col justify-end min-h-[70vh]">
         <div className="max-w-[560px]">
-          {/* Status pill — LIVE / LAST MATCH, alone on its own row. */}
-          <div className="flex items-center mb-3">
+          {/* Status row — LIVE pill (red, pulse) + period eyebrow + score
+              pill, all aligned to the same baseline. */}
+          <div className="flex items-center gap-3 mb-5">
             {isLive ? (
               <div
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
@@ -165,41 +165,34 @@ export const WatchHeroDesktop = ({
                 </span>
               </div>
             )}
-          </div>
-
-          {/* Scoreboard pill — period + team A + score + team B all in
-              one large glass container. Replaces the previous separate
-              H1 title + meta-row score-chip. Reads as a single
-              broadcast-graphics scoreboard line. */}
-          <div className="mb-5 inline-flex">
+            <span className="sf text-[11.5px] tracking-[0.16em] uppercase font-semibold text-white/75">
+              {data.period}
+            </span>
+            {/* Score pill — same vertical metrics as the LIVE pill so the
+                two read as a paired status group. */}
             <div
-              className="inline-flex items-baseline gap-3 px-5 py-3 rounded-full"
+              className="inline-flex items-center px-3 py-1.5 rounded-full"
               style={{
-                background: 'rgba(255,255,255,0.10)',
+                background: 'rgba(255,255,255,0.14)',
                 backdropFilter: 'blur(20px) saturate(160%)',
                 WebkitBackdropFilter: 'blur(20px) saturate(160%)',
-                border: '1px solid rgba(255,255,255,0.18)',
-                boxShadow:
-                  'inset 0 1px 0 rgba(255,255,255,0.18), 0 12px 32px -10px rgba(0,0,0,0.45)',
+                border: '1px solid rgba(255,255,255,0.20)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)',
               }}
             >
-              <span className="sf text-[11.5px] tracking-[0.16em] uppercase font-bold text-white/65 self-center">
-                {data.period}
-              </span>
-              <span className="sf-display text-[22px] xl:text-[26px] font-extrabold text-white tracking-tight leading-none">
-                {data.home}
-              </span>
-              <span
-                className="sf-display text-[22px] xl:text-[26px] font-extrabold tabular-nums text-white tracking-tight leading-none px-2"
-                style={{ textShadow: '0 2px 12px rgba(0,214,254,0.30)' }}
-              >
+              <span className="sf-display text-[12.5px] font-extrabold tabular-nums text-white tracking-tight leading-none">
                 {data.score}
-              </span>
-              <span className="sf-display text-[22px] xl:text-[26px] font-extrabold text-white tracking-tight leading-none">
-                {data.away}
               </span>
             </div>
           </div>
+
+          {/* Massive title with text-shadow for legibility */}
+          <h1
+            className="sf-display text-[44px] xl:text-[52px] font-extrabold leading-[1.05] tracking-[-0.025em] text-white mb-5"
+            style={{ textShadow: '0 4px 24px rgba(0,0,0,0.55)' }}
+          >
+            {data.title}
+          </h1>
 
           {/* Sub-info row — eyebrow only. */}
           <div className="flex items-center gap-3 mb-7">
