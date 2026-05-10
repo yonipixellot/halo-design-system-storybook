@@ -30,9 +30,15 @@ export interface WatchHeroDesktopProps {
   videoSrc?: string | null;
 }
 
+/* Default video URL is base-aware via Vite's import.meta.env.BASE_URL.
+   In dev BASE_URL = '/'; in the GH Pages production build it's
+   '/halo-design-system-storybook/'. So the same default works in both
+   contexts without forking the path. */
+const DEFAULT_VIDEO_SRC = `${import.meta.env.BASE_URL}videos/live-hero.mp4`;
+
 export const WatchHeroDesktop = ({
   onWatch,
-  videoSrc = '/videos/live-hero.mp4',
+  videoSrc = DEFAULT_VIDEO_SRC,
 }: WatchHeroDesktopProps) => {
   const t = useT();
   const liveGame = SEED_WATCH_GAMES.find((g) => g.status === 'live');
