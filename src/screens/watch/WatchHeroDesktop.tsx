@@ -132,13 +132,16 @@ export const WatchHeroDesktop = ({
           each rail's section header. */}
       <div className="relative z-10 mx-auto max-w-[1200px] px-8 xl:px-12 py-20 flex flex-col justify-end min-h-[70vh]">
         <div className="max-w-[560px]">
-          {/* Status row — LIVE pill (red, pulse) when game is live,
-              neutral LAST MATCH pill (translucent glass) when showing
-              the most-recent finished game as fallback. */}
+          {/* Status row — LIVE pill (red, pulse) + period eyebrow + score
+              pill, all aligned to the same baseline. Score moved up here
+              from the previous "meta row below title" position so it
+              sits next to the LIVE indicator (per user critique).
+              Inactive (last-match) state shows neutral glass pill instead
+              of the red LIVE one. */}
           <div className="flex items-center gap-3 mb-5">
             {isLive ? (
               <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
                 style={{
                   background: 'rgba(220,38,38,0.95)',
                   boxShadow:
@@ -152,7 +155,7 @@ export const WatchHeroDesktop = ({
               </div>
             ) : (
               <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
                 style={{
                   background: 'rgba(255,255,255,0.16)',
                   backdropFilter: 'blur(20px) saturate(160%)',
@@ -169,6 +172,22 @@ export const WatchHeroDesktop = ({
             <span className="sf text-[11.5px] tracking-[0.16em] uppercase font-semibold text-white/75">
               {data.period}
             </span>
+            {/* Score pill — same vertical metrics as the LIVE pill so the
+                two read as a paired status group. */}
+            <div
+              className="inline-flex items-center px-3 py-1.5 rounded-full"
+              style={{
+                background: 'rgba(255,255,255,0.14)',
+                backdropFilter: 'blur(20px) saturate(160%)',
+                WebkitBackdropFilter: 'blur(20px) saturate(160%)',
+                border: '1px solid rgba(255,255,255,0.20)',
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)',
+              }}
+            >
+              <span className="sf-display text-[12.5px] font-extrabold tabular-nums text-white tracking-tight leading-none">
+                {data.score}
+              </span>
+            </div>
           </div>
 
           {/* Massive title with text-shadow for legibility */}
@@ -179,24 +198,9 @@ export const WatchHeroDesktop = ({
             {data.title}
           </h1>
 
-          {/* Sub-info row — score chip with proper sf-display typography
-              (no more font-mono wireframe vibe), eyebrow as polished sf
-              with intentional tracking for hierarchy. */}
+          {/* Sub-info row — just the eyebrow now. Score moved up to the
+              status row above the title. */}
           <div className="flex items-center gap-3 mb-7">
-            <div
-              className="inline-flex items-center px-3 py-1.5 squircle-sm"
-              style={{
-                background: 'rgba(255,255,255,0.12)',
-                backdropFilter: 'blur(20px) saturate(160%)',
-                WebkitBackdropFilter: 'blur(20px) saturate(160%)',
-                border: '1px solid rgba(255,255,255,0.20)',
-                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18)',
-              }}
-            >
-              <span className="sf-display text-[15px] font-extrabold tabular-nums text-white tracking-tight">
-                {data.score}
-              </span>
-            </div>
             <span className="sf text-[11px] tracking-[0.14em] uppercase font-semibold text-white/65">
               {data.sub}
             </span>
