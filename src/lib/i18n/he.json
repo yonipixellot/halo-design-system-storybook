@@ -222,5 +222,26 @@
     "default": "{{verb}} {{opp}} {{home}}–{{away}}. #{{n}} עם ביצוע ברגע של לחץ.",
     "defaultWin": "ניצחנו את",
     "defaultLoss": "התמודדנו מול"
+  },
+  "watch": {
+    "title": "HALO TV",
+    "searchPlaceholder": "חפש משחקים, קבוצות…",
+    "noMatches": "אין התאמות",
+    "divisionsKicker": "ליגות",
+    "filtered": "מסונן",
+    "liveNow": "משדרים עכשיו",
+    "fullGames": "משחקים מלאים",
+    "gameHighlights": "היילייטים של משחק",
+    "playerHighlights": "היילייטים של שחקן",
+    "fromYourFollows": "משחקנים שאתה עוקב",
+    "suggestions": "הצעות שעשויות לעניין",
+    "all": "הכול",
+    "watchLive": "צפה חי",
+    "viewDetails": "פרטים",
+    "liveLabel": "משדר חי",
+    "featuredLabel": "מומלץ",
+    "noFollowsTitle": "עקוב אחרי שחקנים כדי לראות את ההיילייטים שלהם",
+    "noFollowsSub": "לחץ על שחקן בכרטיס משחק או בדף הקבוצה כדי להתחיל לעקוב.",
+    "lastMatchLabel": "משחק אחרון"
   }
 }

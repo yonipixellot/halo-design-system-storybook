@@ -12,6 +12,7 @@ export {
   type SideNavDestKey,
 } from './SideNav';
 export { SplitHero, type SplitHeroProps } from './SplitHero';
+export { WatchShell, type WatchShellProps } from './WatchShell';
 export {
   WizardRail,
   type WizardRailProps,

@@ -222,5 +222,26 @@
     "default": "{{verb}} {{opp}} {{home}}–{{away}}. #{{n}} put up a clutch line.",
     "defaultWin": "Took down",
     "defaultLoss": "Faced"
+  },
+  "watch": {
+    "title": "HALO TV",
+    "searchPlaceholder": "Search games, teams…",
+    "noMatches": "No matches",
+    "divisionsKicker": "DIVISIONS",
+    "filtered": "Filtered",
+    "liveNow": "Live now",
+    "fullGames": "Full games",
+    "gameHighlights": "Game highlights",
+    "playerHighlights": "Player highlights",
+    "fromYourFollows": "From players you follow",
+    "suggestions": "Suggestions you might like",
+    "all": "All",
+    "watchLive": "Watch Live",
+    "viewDetails": "View Details",
+    "liveLabel": "LIVE NOW",
+    "featuredLabel": "FEATURED",
+    "noFollowsTitle": "Follow players to see their highlights here",
+    "noFollowsSub": "Tap a player on a game card or team page to start following.",
+    "lastMatchLabel": "LAST MATCH"
   }
 }
