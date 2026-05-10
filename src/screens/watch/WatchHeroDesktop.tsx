@@ -52,9 +52,14 @@ export const WatchHeroDesktop = ({
   const game = liveGame ?? lastGame;
   if (!game) return null;
 
+  /* Split title into two lines after "vs" so the opponent's full name
+     stays together on its own line ("Varsity vs / Westfield Hawks"
+     rather than "Varsity vs Westfield / Hawks"). Same split logic as
+     the phone hero. */
   const data = {
     period: isLive ? (game.period ?? '') : 'FINAL',
-    title: `${game.home} vs ${game.away}`,
+    titleL1: `${game.home} vs`,
+    titleL2: game.away,
     score: `${game.scoreHome} — ${game.scoreAway}`,
     gameId: game.id,
     sub: 'BASKETBALL · U18 · EASTSIDE GYM',
@@ -186,12 +191,15 @@ export const WatchHeroDesktop = ({
             </div>
           </div>
 
-          {/* Massive title with text-shadow for legibility */}
+          {/* Massive title with text-shadow for legibility. Split into
+              two divs so the line break lands AFTER "vs" — keeps the
+              opponent's full name on one line. */}
           <h1
             className="sf-display text-[44px] xl:text-[52px] font-extrabold leading-[1.05] tracking-[-0.025em] text-white mb-5"
             style={{ textShadow: '0 4px 24px rgba(0,0,0,0.55)' }}
           >
-            {data.title}
+            <div>{data.titleL1}</div>
+            <div>{data.titleL2}</div>
           </h1>
 
           {/* Sub-info row — eyebrow only. */}
