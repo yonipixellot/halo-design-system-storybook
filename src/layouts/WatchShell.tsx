@@ -43,6 +43,10 @@ export interface WatchShellProps {
   /** Stacked rails. Each child should be a horizontal rail (e.g.
       `<WatchLane>`) that handles its own padding + overflow. */
   children: ReactNode;
+  /** Optional center-of-top-bar slot — typically a search input or
+      command-K trigger. Centered between the brand (start) and the
+      `topBarRight` slot (end). */
+  topBarCenter?: ReactNode;
   /** Optional right-side slot in the top bar (avatar, sign-out, etc.).
       Default is a small "All Access" pill placeholder. */
   topBarRight?: ReactNode;
@@ -59,6 +63,7 @@ const DefaultBrand = () => (
 export const WatchShell = ({
   hero,
   children,
+  topBarCenter,
   topBarRight,
   brandLabel,
 }: WatchShellProps) => (
@@ -86,9 +91,13 @@ export const WatchShell = ({
         WebkitBackdropFilter: 'blur(12px) saturate(160%)',
       }}
     >
-      <div className="mx-auto max-w-[1200px] px-8 xl:px-12 py-4 flex items-center justify-between">
-        {brandLabel ?? <DefaultBrand />}
-        <div className="flex items-center gap-3">
+      <div className="mx-auto max-w-[1200px] px-8 xl:px-12 py-4 flex items-center gap-6">
+        <div className="shrink-0">{brandLabel ?? <DefaultBrand />}</div>
+        {/* Center slot — flex-1 so it expands to take the space between
+            brand and right slot, but capped internally by whatever is
+            passed in (typically a 440px-max-w search input). */}
+        <div className="flex-1 min-w-0">{topBarCenter}</div>
+        <div className="flex items-center gap-3 shrink-0">
           {topBarRight ?? (
             <span className="lg-glass squircle-sm px-3 py-1.5 text-[11px] tracking-[0.14em] uppercase font-semibold text-white/80">
               All Access

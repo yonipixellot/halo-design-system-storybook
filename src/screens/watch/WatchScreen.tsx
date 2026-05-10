@@ -1,12 +1,13 @@
-import { useMemo, useState } from 'react';
-import { cls } from '@/lib/cls';
+import { useState } from 'react';
 import { FeaturedHero } from './FeaturedHero';
 import { WatchHeroDesktop } from './WatchHeroDesktop';
 import { DivisionTileGrid } from './DivisionTileGrid';
 import { DivisionFilterChip } from './DivisionFilterChip';
 import { WatchRails, type WatchPersona } from './WatchRails';
 import { WatchShell } from '@/layouts/WatchShell';
-import { SEED_WATCH_GAMES, useT, type WatchGame } from './_data';
+import { LivePlayerScreen } from './LivePlayerScreen';
+import { WatchSearchInput } from './WatchSearchInput';
+import { SEED_WATCH_GAMES, type WatchGame } from './_data';
 
 /* WatchScreen — top-level orchestrator with responsive split.
 
@@ -65,18 +66,24 @@ export const WatchScreen = ({
   onPickMoment,
   onAllRail,
 }: WatchScreenProps) => {
-  const t = useT();
   const [activeDivision, setActiveDivision] = useState<string | null>(initialDivision);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const isSearching = searchQuery.length > 0;
+  /* When the user taps a live game CTA (hero "Watch Live" or any live
+     card in the rails), this holds the game id of the live player to
+     mount as a full-screen overlay. Closing returns to the Watch list
+     with scroll position preserved (the Watch tree stays mounted). */
+  const [livePlayerGameId, setLivePlayerGameId] = useState<string | null>(null);
 
-  const suggestions = useMemo(() => {
-    if (!isSearching) return [];
-    const q = searchQuery.toLowerCase();
-    return SEED_WATCH_GAMES.filter((g) =>
-      `${g.home} ${g.away}`.toLowerCase().includes(q),
-    ).slice(0, 6);
-  }, [searchQuery, isSearching]);
+  /* Internal handler — replaces direct onPushGame for live navigation
+     so the player opens in-place. Non-live destinations still bubble
+     up via onPushGame for the host app to handle. */
+  const handlePushGame = (gameId: string, status: WatchGame['status']) => {
+    if (status === 'live') {
+      setLivePlayerGameId(gameId);
+      return;
+    }
+    onPushGame?.(gameId, status);
+  };
 
   /* Shared body — division grid + filter chip + rails. Reused by both
      phone and desktop trees so persona/division logic lives in one place. */
@@ -93,7 +100,7 @@ export const WatchScreen = ({
         persona={persona}
         activeDivision={activeDivision}
         followedPlayers={followedPlayers}
-        onPushGame={onPushGame}
+        onPushGame={handlePushGame}
         onPickMoment={(id, index) => onPickMoment?.(id, index)}
         onAllRail={onAllRail}
       />
@@ -135,82 +142,18 @@ export const WatchScreen = ({
             </span>
           </div>
 
-          <div className="relative">
-            <input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('watch.searchPlaceholder')}
-              className="w-full ps-10 pe-10 py-3 squircle-md text-[15px] outline-none text-white placeholder:text-white/45 lg-glass sf"
-            />
-            <span className="absolute start-3.5 top-1/2 -translate-y-1/2 text-[16px] text-white/70 pointer-events-none">
-              ⌕
-            </span>
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute end-3 top-1/2 -translate-y-1/2 text-[13px] text-white/70 w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/10"
-                aria-label="Clear"
-              >
-                ✕
-              </button>
-            )}
-
-            {isSearching && (
-              <div className="absolute start-0 end-0 top-[calc(100%+8px)] z-30 lg-glass-card squircle-md overflow-hidden anim-fade">
-                {suggestions.length === 0 ? (
-                  <div className="px-3 py-4 text-center">
-                    <span className="sf text-[10.5px] tracking-[0.14em] uppercase font-semibold text-white/55">
-                      {t('watch.noMatches')}
-                    </span>
-                  </div>
-                ) : (
-                  suggestions.map((g, i) => (
-                    <button
-                      key={g.id}
-                      onClick={() => {
-                        setSearchQuery('');
-                        onPushGame?.(g.id, g.status);
-                      }}
-                      className={cls(
-                        'w-full px-3 py-2.5 flex items-center gap-3 text-start hover:bg-white/5',
-                        i < suggestions.length - 1 ? 'border-b border-white/10' : '',
-                      )}
-                    >
-                      <div
-                        className={cls(
-                          'w-1.5 h-1.5 rounded-full shrink-0',
-                          g.status === 'live'
-                            ? 'bg-red-500 anim-pulse'
-                            : g.status === 'upcoming'
-                              ? 'bg-white/40'
-                              : 'bg-white/20',
-                        )}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="sf text-[13px] font-semibold text-white truncate text-start">
-                          {g.home} vs {g.away}
-                        </div>
-                        <span className="sf text-[10px] tracking-[0.12em] uppercase font-semibold text-white/55">
-                          {g.status === 'live'
-                            ? `LIVE · ${g.period} · ${g.scoreHome}–${g.scoreAway}`
-                            : g.status === 'upcoming'
-                              ? 'UPCOMING'
-                              : `FINAL · ${g.scoreHome}–${g.scoreAway}`}
-                        </span>
-                      </div>
-                      <span className="text-[12px] text-white/40">›</span>
-                    </button>
-                  ))
-                )}
-              </div>
-            )}
-          </div>
+          <WatchSearchInput
+            query={searchQuery}
+            setQuery={setSearchQuery}
+            onPick={handlePushGame}
+            variant="phone"
+          />
         </div>
 
         {/* Body — phone hero + shared body */}
         <FeaturedHero
           onWatch={(gameId, isLive) =>
-            onPushGame?.(gameId, isLive ? 'live' : 'upcoming')
+            handlePushGame(gameId, isLive ? 'live' : 'upcoming')
           }
         />
         {body}
@@ -219,10 +162,18 @@ export const WatchScreen = ({
       {/* ──────────────── Desktop (lg+) ──────────────── */}
       <div className="hidden lg:block">
         <WatchShell
+          topBarRight={
+            <WatchSearchInput
+              query={searchQuery}
+              setQuery={setSearchQuery}
+              onPick={handlePushGame}
+              variant="desktop"
+            />
+          }
           hero={
             <WatchHeroDesktop
               onWatch={(gameId, isLive) =>
-                onPushGame?.(gameId, isLive ? 'live' : 'upcoming')
+                handlePushGame(gameId, isLive ? 'live' : 'upcoming')
               }
             />
           }
@@ -230,6 +181,14 @@ export const WatchScreen = ({
           {body}
         </WatchShell>
       </div>
+
+      {/* ──────────────── Live Player overlay ──────────────── */}
+      {livePlayerGameId && (
+        <LivePlayerScreen
+          game={SEED_WATCH_GAMES.find((g) => g.id === livePlayerGameId)}
+          onClose={() => setLivePlayerGameId(null)}
+        />
+      )}
     </>
   );
 };
